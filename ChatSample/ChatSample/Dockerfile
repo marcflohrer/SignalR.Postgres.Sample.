@@ -76,7 +76,16 @@ RUN set -e \
     && chmod +x /app/ChatSample \
     #
     # add a user 'appuser' without privileges in group 'appgroup'
-    && addgroup -S appgroup && adduser -S -h /app -G appgroup appuser
+    && addgroup -S appgroup && adduser -S -h /app -G appgroup appuser \
+    #
+    # Remove all but a handful of admin commands:
+    && find /sbin /usr/sbin ! -type d \
+            -a ! -name login_duo \
+            -a ! -name nologin \
+            -a ! -name setup-proxy \
+            -a ! -name sshd \
+            -a ! -name start.sh \
+            -delete
     
 USER appuser
 ENTRYPOINT ["/app/ChatSample"]
