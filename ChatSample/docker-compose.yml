@@ -4,7 +4,7 @@ services:
   chatsample:
     image: chatsample
     ports:
-      - "80:80"
+      - "80:8081"
     build:
       context: ChatSample/
       dockerfile: Dockerfile

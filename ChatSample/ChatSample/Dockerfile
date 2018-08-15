@@ -18,14 +18,14 @@ RUN apk update \
     && apk -X https://nl.alpinelinux.org/alpine/edge/main/ add --no-cache \
         lttng-ust
 
-# Configure Kestrel web server to bind to port 80 when present
-ENV ASPNETCORE_URLS=http://+:80 \
+# Configure Kestrel web server to bind to port 8081 when present
+ENV ASPNETCORE_URLS=http://+:8081 \
     # Enable detection of running in a container
     DOTNET_RUNNING_IN_CONTAINER=true \
     # Set the invariant mode since icu_libs isn't included (see https://github.com/dotnet/announcements/issues/20)
     DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
 WORKDIR /app
-EXPOSE 80
+EXPOSE 8081
 
 FROM microsoft/dotnet:2.1-sdk-alpine3.7 AS build
 WORKDIR /src
