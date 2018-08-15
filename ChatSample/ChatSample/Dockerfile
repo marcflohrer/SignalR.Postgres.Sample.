@@ -31,6 +31,7 @@ FROM microsoft/dotnet:2.1-sdk-alpine3.7 AS build
 WORKDIR /src
 
 COPY *.csproj ./
+COPY NuGet.config ./
 RUN dotnet restore -nowarn:msb3202,nu1503 ChatSample.csproj
 COPY . .
 WORKDIR /src/
