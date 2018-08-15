@@ -96,7 +96,11 @@ RUN set -e \
             -a ! -name setup-proxy \
             -a ! -name sshd \
             -a ! -name start.sh \
-            -delete    
+            -delete \
+    #
+    # Remove apk configs.
+    && sysdirs="/bin /etc /lib /sbin /usr" \
+    && find $sysdirs -xdev -regex '.*apk.*' -exec rm -fr {} +        
 
 USER appuser
 
