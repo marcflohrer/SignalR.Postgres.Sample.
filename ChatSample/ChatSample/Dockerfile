@@ -134,7 +134,18 @@ RUN set -e \
     && rm -fr /etc/conf.d \
     && rm -fr /etc/inittab \
     && rm -fr /etc/runlevels \
-    && rm -fr /etc/rc.conf         
+    && rm -fr /etc/rc.conf \
+    #
+    # Remove kernel tunables since we do not need them.
+    #
+    # Kernel tunables are used to customize the behavior of linux at boot, or on demand while the system is running. 
+    # Some hardware parameters are specified at boot time only and cannot be altered once the system is running, 
+    # most however, can be altered as required and set permanent for the next boot. 
+    && rm -fr /etc/sysctl* \
+    && rm -fr /etc/modprobe.d \
+    && rm -fr /etc/modules \
+    && rm -fr /etc/mdev.conf \
+    && rm -fr /etc/acpi \        
 
 USER appuser
 ENTRYPOINT ["/app/ChatSample"]
