@@ -67,6 +67,11 @@ RUN set -e \
     # Be informative after successful login:
     && echo -e "\n\nApp container image built on $(date)." > /etc/motd \
     #
+    # Remove existing crontabs, if any:	
+    && rm -fr /var/spool/cron \ 
+    && rm -fr /etc/crontabs \
+    && rm -fr /etc/periodic \
+    #
     # make /app/ChatSample an executable
     && chmod +x /app/ChatSample \
     #
