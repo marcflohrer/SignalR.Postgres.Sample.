@@ -67,13 +67,20 @@ RUN set -e \
     # Be informative after successful login:
     && echo -e "\n\nApp container image built on $(date)." > /etc/motd \
     #
-    # Remove existing crontabs, if any:	
+    # Remove existing crontabs, if any:
+    #
+    # The crontab (cron derives from chronos, Greek for time; tab stands for table) command, found in Unix and Unix-like operating systems,
+    # is used to schedule commands to be executed periodically.	
     && rm -fr /var/spool/cron \ 
     && rm -fr /etc/crontabs \
     && rm -fr /etc/periodic \
     #
     # make /app/ChatSample an executable
     && chmod +x /app/ChatSample \
+    #
+    # Remove unnecessary user accounts.
+    && sed -i -r "/^(user|root|sshd)/!d" /etc/group \
+    && sed -i -r "/^(user|root|sshd)/!d" /etc/passwd \
     #
     # add a user 'appuser' without privileges in group 'appgroup'
     && addgroup -S appgroup && adduser -S -h /app -G appgroup appuser \
@@ -85,7 +92,8 @@ RUN set -e \
             -a ! -name setup-proxy \
             -a ! -name sshd \
             -a ! -name start.sh \
-            -delete
-    
+            -delete    
+
 USER appuser
+
 ENTRYPOINT ["/app/ChatSample"]
