@@ -43,4 +43,8 @@ RUN dotnet publish -c Release -o /app -r alpine.3.7-x64 ChatSample.csproj
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
+# Add our user and group first to make sure their IDs get assigned consistently
+RUN chmod +x /app/ChatSample
+RUN addgroup -S appgroup && adduser -S -h /app -G appgroup appuser 
+USER appuser
 ENTRYPOINT ["/app/ChatSample"]
