@@ -43,8 +43,35 @@ RUN dotnet publish -c Release -o /app -r alpine.3.7-x64 ChatSample.csproj
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-# Add our user and group first to make sure their IDs get assigned consistently
-RUN chmod +x /app/ChatSample
-RUN addgroup -S appgroup && adduser -S -h /app -G appgroup appuser 
+
+# set -e: Exit immediately if a command exits with a non-zero status.
+RUN set -e \
+    #
+    # Print a trace of simple commands and their arguments after they are expanded and before they are executed.
+    && set -x \
+    #
+    # Find files with permission setuid and setgid (+6000) and change their permissions to 'all but setuid' (a-s):
+    #
+    # When set-user identification (setuid) permission is set on an executable file, a process that runs this file 
+    # is granted access based on the owner of the file (usually root), rather than the user who is running the executable file
+    #
+    # The set-group identification (setgid) permission is similar to setuid, except that the process's 
+    # effective group ID (GID) is changed to the group owner of the file, and a user is granted access 
+    # based on permissions granted to that group.
+    && for i in `find / -perm +6000 -type f 2>/dev/null`; do chmod a-s $i; done \
+    #
+    # This line replaces anything that starts with the name user:!: with user:x:, in-place in /etc/shadow:
+    # /etc/shadow contains encrypted password as well as other information such as account or password expiration values
+    && sed -i -r "s/^user:!:/user:x:/" /etc/shadow \
+    #
+    # Be informative after successful login:
+    && echo -e "\n\nApp container image built on $(date)." > /etc/motd \
+    #
+    # make /app/ChatSample an executable
+    && chmod +x /app/ChatSample \
+    #
+    # add a user 'appuser' without privileges in group 'appgroup'
+    && addgroup -S appgroup && adduser -S -h /app -G appgroup appuser
+    
 USER appuser
 ENTRYPOINT ["/app/ChatSample"]
