@@ -14,9 +14,7 @@ RUN apk update \
         libstdc++ \
         tzdata \
         userspace-rcu \
-        zlib \
-    && apk -X https://nl.alpinelinux.org/alpine/edge/main/ add --no-cache \
-        lttng-ust
+        zlib
 
 # Configure Kestrel web server to bind to port 8081 when present
 ENV ASPNETCORE_URLS=http://+:8081 \
