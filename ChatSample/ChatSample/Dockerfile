@@ -126,7 +126,15 @@ RUN set -e \
 	    -name od -o \
 	    -name strings -o \
 	    -name su \
-        \) -delete 
+        \) -delete \
+    #
+    # Remove init scripts since we do not use them:
+    && rm -fr /etc/init.d \
+    && rm -fr /lib/rc \
+    && rm -fr /etc/conf.d \
+    && rm -fr /etc/inittab \
+    && rm -fr /etc/runlevels \
+    && rm -fr /etc/rc.conf         
 
 USER appuser
 ENTRYPOINT ["/app/ChatSample"]
