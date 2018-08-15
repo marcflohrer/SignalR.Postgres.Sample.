@@ -15,7 +15,7 @@ RUN apk update \
         tzdata \
         userspace-rcu \
         zlib \
-    && apk -X https://dl-cdn.alpinelinux.org/alpine/edge/main add --no-cache \
+    && apk -X https://nl.alpinelinux.org/alpine/edge/main/ add --no-cache \
         lttng-ust
 
 # Configure Kestrel web server to bind to port 80 when present
