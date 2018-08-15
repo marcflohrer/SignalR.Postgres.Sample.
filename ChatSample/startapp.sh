@@ -1,3 +1,4 @@
+#!/bin/bash
 docker container prune -f \
    && docker-compose up -d  \
    && docker image prune -f \
