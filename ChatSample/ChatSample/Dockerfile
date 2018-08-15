@@ -145,7 +145,16 @@ RUN set -e \
     && rm -fr /etc/modprobe.d \
     && rm -fr /etc/modules \
     && rm -fr /etc/mdev.conf \
-    && rm -fr /etc/acpi \        
+    && rm -fr /etc/acpi \
+    #
+    # Remove root homedir since we do not need it:
+    && rm -fr /root \
+    #
+    # Remove fstab since we do not need it:
+    && rm -f /etc/fstab \
+    #
+    # Remove broken symlinks (because we removed the targets above):
+    && find $sysdirs -xdev -type l -exec test ! -e {} \; -delete      
 
 USER appuser
 ENTRYPOINT ["/app/ChatSample"]
