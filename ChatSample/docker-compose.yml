@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  chatsample:
+    image: chatsample
+    ports:
+      - "80:80"
+    build:
+      context: ChatSample/
+      dockerfile: Dockerfile
