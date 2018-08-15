@@ -106,7 +106,12 @@ RUN set -e \
     #   /etc/shadow-
     #   /etc/passwd-
     #   /etc/group-
-    && find $sysdirs -xdev -type f -regex '.*-$' -exec rm -f {} +       
+    && find $sysdirs -xdev -type f -regex '.*-$' -exec rm -f {} + \
+    #
+    # Ensure system dirs are owned by root and not writable by anybody else.
+    && find $sysdirs -xdev -type d \
+            -exec chown root:root {} \; \
+            -exec chmod 0755 {} \;
 
 USER appuser
 
