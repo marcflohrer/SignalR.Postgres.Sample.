@@ -111,8 +111,10 @@ RUN set -e \
     # Ensure system dirs are owned by root and not writable by anybody else.
     && find $sysdirs -xdev -type d \
             -exec chown root:root {} \; \
-            -exec chmod 0755 {} \;
+            -exec chmod 0755 {} \; \
+    #
+    # Remove all suid files, if any.
+    && find $sysdirs -xdev -type f -a -perm +4000 -delete
 
 USER appuser
-
 ENTRYPOINT ["/app/ChatSample"]
