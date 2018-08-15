@@ -75,15 +75,19 @@ RUN set -e \
     && rm -fr /etc/crontabs \
     && rm -fr /etc/periodic \
     #
-    # make /app/ChatSample an executable
+    # Make /app/ChatSample an executable
     && chmod +x /app/ChatSample \
     #
-    # Remove unnecessary user accounts.
-    && sed -i -r "/^(user|root|sshd)/!d" /etc/group \
-    && sed -i -r "/^(user|root|sshd)/!d" /etc/passwd \
-    #
-    # add a user 'appuser' without privileges in group 'appgroup'
+    # Add a user 'appuser' without privileges in group 'appgroup'
     && addgroup -S appgroup && adduser -S -h /app -G appgroup appuser \
+    #
+    # Remove unnecessary user accounts.
+    && sed -i -r "/^(appuser|root|sshd)/!d" /etc/group \
+    && sed -i -r "/^(appuser|root|sshd)/!d" /etc/passwd \
+    #
+    # Remove interactive login shell for everybody but user.
+    && sed -i -r '/^appuser:/! s#^(.*):[^:]*$#\1:/sbin/nologin#' /etc/passwd \ 
+    && sysdirs="/bin /etc /lib /sbin /usr " \
     #
     # Remove all but a handful of admin commands:
     && find /sbin /usr/sbin ! -type d \
