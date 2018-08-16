@@ -8,9 +8,11 @@ using Microsoft.Extensions.Logging;
 
 namespace CsharpClient
 {
-    public class Program
+    public static class Program
     {
+#pragma warning disable RECS0154 // Parameter wird niemals verwendet.
         static async Task Main(string[] args)
+#pragma warning restore RECS0154 // Parameter wird niemals verwendet.
         {
             var connection = new HubConnectionBuilder()
                 .WithUrl("http://localhost:5000/stocks")
