@@ -4,7 +4,7 @@ XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 WebSocket = require("websocket").w3cwebsocket;
 
 var hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl("http://localhost:5000/stocks")
+    .withUrl("http://localhost:80/stocks")
     .build();
 
 hubConnection.start()
