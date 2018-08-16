@@ -40,6 +40,7 @@ RUN dotnet publish -c Release -o /app -r alpine.3.7-x64
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
+ENV EXE=/app/StockTickR
 
 # set -e: Exit immediately if a command exits with a non-zero status.
 RUN set -e \
@@ -67,13 +68,13 @@ RUN set -e \
     # Remove existing crontabs, if any:
     #
     # The crontab (cron derives from chronos, Greek for time; tab stands for table) command, found in Unix and Unix-like operating systems,
-    # is used to schedule commands to be executed periodically.	
+    # is used to schedule commands to be executed periodically.  
     && rm -fr /var/spool/cron \ 
     && rm -fr /etc/crontabs \
     && rm -fr /etc/periodic \
     #
-    # Make /app/StockTickR an executable
-    && chmod +x /app/StockTickR \
+    # Make freshly built binary executable by any user
+    && chmod +x $EXE \
     #
     # Add a user 'appuser' without privileges in group 'appgroup'
     && addgroup -S appgroup && adduser -S -h /app -G appgroup appuser \
@@ -115,14 +116,14 @@ RUN set -e \
     #
     # Remove other programs that could be dangerous:
     && find $sysdirs -xdev \( \
-	    -name hexdump -o \
-	    -name chgrp -o \
-	    -name chmod -o \
-	    -name chown -o \
-	    -name ln -o \
-	    -name od -o \
-	    -name strings -o \
-	    -name su \
+     -name hexdump -o \
+     -name chgrp -o \
+     -name chmod -o \
+     -name chown -o \
+     -name ln -o \
+     -name od -o \
+     -name strings -o \
+     -name su \
         \) -delete \
     #
     # Remove init scripts since we do not use them:
@@ -154,4 +155,4 @@ RUN set -e \
     && find $sysdirs -xdev -type l -exec test ! -e {} \; -delete      
 
 USER appuser
-ENTRYPOINT ["/app/StockTickR"]
+ENTRYPOINT $EXE

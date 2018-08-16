@@ -40,6 +40,7 @@ RUN dotnet publish -c Release -o /app -r alpine.3.7-x64
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
+ENV EXE=/app/ChatSample
 
 # set -e: Exit immediately if a command exits with a non-zero status.
 RUN set -e \
@@ -72,8 +73,8 @@ RUN set -e \
     && rm -fr /etc/crontabs \
     && rm -fr /etc/periodic \
     #
-    # Make /app/ChatSample an executable
-    && chmod +x /app/ChatSample \
+    # Make freshly built binary executable by any user
+    && chmod +x $EXE \
     #
     # Add a user 'appuser' without privileges in group 'appgroup'
     && addgroup -S appgroup && adduser -S -h /app -G appgroup appuser \
@@ -154,4 +155,5 @@ RUN set -e \
     && find $sysdirs -xdev -type l -exec test ! -e {} \; -delete      
 
 USER appuser
-ENTRYPOINT ["/app/ChatSample"]
+ENTRYPOINT $EXE
+
