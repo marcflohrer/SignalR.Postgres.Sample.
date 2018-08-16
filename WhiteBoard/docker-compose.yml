@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  whiteboard:
+    image: whiteboard
+    ports:
+      - "80:8081"
+    build:
+      context: WhiteBoard/
+      dockerfile: Dockerfile
