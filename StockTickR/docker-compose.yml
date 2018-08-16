@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  stocktickr:
+    image: stocktickr
+    ports:
+      - "80:8081"    
+    build:
+      context: StockTickRApp/
+      dockerfile: Dockerfile
