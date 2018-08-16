@@ -36,14 +36,13 @@ COPY NuGet.config ./
 RUN dotnet restore -nowarn:msb3202,nu1503
 COPY . .
 WORKDIR /src/
-RUN dotnet build -c Release -o ${WORKDIR} -r alpine.3.7-x64 
+RUN dotnet build -c Release -o /app -r alpine.3.7-x64 
 
 FROM build AS publish
-RUN dotnet publish -c Release -o ${WORKDIR} -r alpine.3.7-x64 
+RUN dotnet publish -c Release -o /app -r alpine.3.7-x64 
 
 FROM base AS final
-WORKDIR ${WORKDIR}
-COPY --from=publish ${WORKDIR} .
+COPY --from=publish /app .
 
 # set -e: Exit immediately if a command exits with a non-zero status.
 RUN set -e \
