@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace StockTickR
+namespace StockTickR.Models
 {
     public class Stock
     {
-        private decimal _price;
+        decimal _price;
 
         public string Symbol { get; set; }
 

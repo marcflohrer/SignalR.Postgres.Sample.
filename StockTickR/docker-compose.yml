@@ -3,8 +3,12 @@ version: '3.4'
 services:
   stocktickr:
     image: stocktickr
+    environment:
+      - ConnectionString=Server=db;Port=5432;Database=stocksdb;User Id=${MY_POSTGRES_USER};Password=${MY_POSTGRES_PASSWORD};Protocol=3;SSL=true;SslMode=Require;
     ports:
-      - "80:8081"    
+      - "80:8081"
+    links:
+      - "stocksdb:db"      
     build:
       context: StockTickRApp/
       dockerfile: Dockerfile
@@ -19,3 +23,13 @@ services:
       context: CsharpClient/
       dockerfile: Dockerfile
 
+  stocksdb:
+    image: postgresdb
+    environment:
+      - POSTGRES_PASSWORD=${MY_POSTGRES_PASSWORD}
+      - POSTGRES_USER=${MY_POSTGRES_USER}
+    volumes:
+      - ${PATH_TO_PERSISTENT_DB}:/var/lib/postgresql/data  
+    build:
+      context: PostgresDb/
+      dockerfile: Dockerfile

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using StockTickR.Models;
 
 namespace StockTickR.Hubs
 {
     public class StockTickerHub : Hub
     {
-        private readonly StockTicker _stockTicker;
+        readonly StockTicker _stockTicker;
 
         public StockTickerHub(StockTicker stockTicker)
         {

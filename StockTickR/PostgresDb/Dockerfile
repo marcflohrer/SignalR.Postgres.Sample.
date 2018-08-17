@@ -1,0 +1,1 @@
+FROM postgres:11-beta3-alpine

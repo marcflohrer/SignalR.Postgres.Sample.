@@ -7,27 +7,28 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using StockTickR.Hubs;
+using StockTickR.Models;
 
 namespace StockTickR
 {
     public class StockTicker
     {
-        private readonly SemaphoreSlim _marketStateLock = new SemaphoreSlim(1, 1);
-        private readonly SemaphoreSlim _updateStockPricesLock = new SemaphoreSlim(1, 1);
+        readonly SemaphoreSlim _marketStateLock = new SemaphoreSlim(1, 1);
+        readonly SemaphoreSlim _updateStockPricesLock = new SemaphoreSlim(1, 1);
 
-        private readonly ConcurrentDictionary<string, Stock> _stocks = new ConcurrentDictionary<string, Stock>();
+        readonly ConcurrentDictionary<string, Stock> _stocks = new ConcurrentDictionary<string, Stock>();
 
-        private readonly Subject<Stock> _subject = new Subject<Stock>();
+        readonly Subject<Stock> _subject = new Subject<Stock>();
 
         // Stock can go up or down by a percentage of this factor on each change
-        private readonly double _rangePercent = 0.002;
+        readonly double _rangePercent = 0.002;
 
-        private readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(250);
-        private readonly Random _updateOrNotRandom = new Random();
+        readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(250);
+        readonly Random _updateOrNotRandom = new Random();
 
-        private Timer _timer;
-        private volatile bool _updatingStockPrices;
-        private volatile MarketState _marketState;
+        Timer _timer;
+        volatile bool _updatingStockPrices;
+        volatile MarketState _marketState;
 
         public StockTicker(IHubContext<StockTickerHub> hub)
         {
@@ -35,7 +36,7 @@ namespace StockTickR
             LoadDefaultStocks();
         }
 
-        private IHubContext<StockTickerHub> Hub
+        IHubContext<StockTickerHub> Hub
         {
             get;
             set;
@@ -119,7 +120,7 @@ namespace StockTickR
             }
         }
 
-        private void LoadDefaultStocks()
+        void LoadDefaultStocks()
         {
             _stocks.Clear();
 
@@ -133,7 +134,7 @@ namespace StockTickR
             stocks.ForEach(stock => _stocks.TryAdd(stock.Symbol, stock));
         }
 
-        private async void UpdateStockPrices(object state)
+        async void UpdateStockPrices(object state)
         {
             // This function must be re-entrant as it's running as a timer interval handler
             await _updateStockPricesLock.WaitAsync();
@@ -159,7 +160,7 @@ namespace StockTickR
             }
         }
 
-        private bool TryUpdateStockPrice(Stock stock)
+        bool TryUpdateStockPrice(Stock stock)
         {
             // Randomly choose whether to udpate this stock or not
             var r = _updateOrNotRandom.NextDouble();
@@ -179,7 +180,7 @@ namespace StockTickR
             return true;
         }
 
-        private async Task BroadcastMarketStateChange(MarketState marketState)
+        async Task BroadcastMarketStateChange(MarketState marketState)
         {
             switch (marketState)
             {
@@ -190,11 +191,11 @@ namespace StockTickR
                     await Hub.Clients.All.SendAsync("marketClosed");
                     break;
                 default:
-                    break;
+                    throw new Exception("Unknown market state");
             }
         }
 
-        private async Task BroadcastMarketReset()
+        async Task BroadcastMarketReset()
         {
             await Hub.Clients.All.SendAsync("marketReset");
         }
