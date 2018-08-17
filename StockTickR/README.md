@@ -11,6 +11,11 @@ To run when it is already built:
 $ ./startapp.sh
 ```
 
+To stop the app:
+```
+$ ./stopapp.sh
+```
+
 Application is hosted on `http://localhost:80` by default.
 
 ## Node Client
