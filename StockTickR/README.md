@@ -1,3 +1,6 @@
+## Prerequisite
+* docker installation
+
 ## StockTickR Server
 The server application is located in the `StockTickRApp` folder.
 
