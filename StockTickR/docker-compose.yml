@@ -12,7 +12,7 @@ services:
   csharpclient:
     image: csharpclient
     ports:
-      - "5000:5000"  
+      - "5000:5000" 
     links:
       - "stocktickr:stocktickr"          
     build:

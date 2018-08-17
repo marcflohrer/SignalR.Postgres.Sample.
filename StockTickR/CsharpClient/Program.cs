@@ -15,7 +15,7 @@ namespace CsharpClient
 #pragma warning restore RECS0154 // Parameter wird niemals verwendet.
         {
             var connection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5000/stocks")
+                .WithUrl("http://stocktickr:8081/stocks")
                 .ConfigureLogging(logging =>
                 {
                     logging.AddConsole();

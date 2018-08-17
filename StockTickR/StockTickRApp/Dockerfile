@@ -13,8 +13,12 @@ RUN dotnet publish -c Release -o /app -r alpine.3.7-x64
 
 FROM lohrer/aspnetcore-alpine:alpine3.8 as base
 
+# Define the port that is exposed by the application
 ENV PORT=8081
-ENV EXE=/app/StockTickR
+# Define the name of the application
+ENV EXE=/StockTickR
+# Define the working directory inside the container
+ENV WD=/app
 
 ENV ASPNETCORE_URLS=http://+:${PORT} \
     # Enable detection of running in a container
@@ -23,12 +27,12 @@ ENV ASPNETCORE_URLS=http://+:${PORT} \
     DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
 EXPOSE ${PORT}
 
-WORKDIR /app
-COPY --from=publish /app .
-RUN chmod +x ${EXE} \
+WORKDIR ${WD}
+COPY --from=publish ${WD} .
+RUN chmod +x ${WD}${EXE} \
     && find $sysdirs -xdev \( \
        -name chmod -o \
         \) -delete
 
 USER appuser
-ENTRYPOINT ${EXE}
+ENTRYPOINT ${WD}${EXE}
