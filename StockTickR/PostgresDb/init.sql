@@ -1,0 +1,1 @@
+create table stocks(id int);

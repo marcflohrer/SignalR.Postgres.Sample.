@@ -126,12 +126,11 @@ namespace StockTickR
 
             var stocks = new List<Stock>
             {
-                new Stock { Symbol = "MSFT", Price = 75.12m },
-                new Stock { Symbol = "AAPL", Price = 158.44m },
-                new Stock { Symbol = "GOOG", Price = 924.54m }
+                new Stock{ Symbol = new Symbol{Name = "MSFT"}, Price = 75.12M},
+                new Stock{ Symbol = new Symbol{Name = "AAPL"}, Price = 158.44M},
+                new Stock{ Symbol = new Symbol{Name = "GOOG"}, Price = 924.54M}
             };
-
-            stocks.ForEach(stock => _stocks.TryAdd(stock.Symbol, stock));
+            stocks.ForEach(stock => _stocks.TryAdd(stock.Symbol.Name, stock));
         }
 
         async void UpdateStockPrices(object state)
@@ -176,7 +175,7 @@ namespace StockTickR
             var change = Math.Round(stock.Price * (decimal)percentChange, 2);
             change = pos ? change : -change;
 
-            stock.Price += change;
+            stock = new Stock { Symbol = stock.Symbol, Price = stock.Price + change };
             return true;
         }
 

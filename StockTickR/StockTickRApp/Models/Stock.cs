@@ -1,20 +1,22 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using StockTickR.Repositories.Core;
 
 namespace StockTickR.Models
 {
-    public class Stock
+    public class Stock : BaseEntity
     {
-        decimal _price;
+        [ForeignKey("SymbolId")]
+        public Symbol Symbol { get; set; }
 
-        public string Symbol { get; set; }
+        public decimal DayOpen { get; set; }
 
-        public decimal DayOpen { get; private set; }
+        public decimal DayLow { get; set; }
 
-        public decimal DayLow { get; private set; }
+        public decimal DayHigh { get; set; }
 
-        public decimal DayHigh { get; private set; }
-
-        public decimal LastChange { get; private set; }
+        public decimal LastChange { get; set; }
 
         public decimal Change
         {
@@ -31,6 +33,7 @@ namespace StockTickR.Models
                 return (double)Math.Round(Change / Price, 4);
             }
         }
+        decimal _price;
 
         public decimal Price
         {
@@ -62,5 +65,12 @@ namespace StockTickR.Models
                 }
             }
         }
+    }
+
+    public class Symbol : ValueObject
+    {
+        [Key]
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

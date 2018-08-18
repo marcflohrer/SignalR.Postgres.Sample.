@@ -1,5 +1,9 @@
 ## Prerequisite
 * docker installation
+* top-level .env file with the following keys: DB_PASSWORD, DB_USER, PATH_TO_PERSISTENT_DB
+
+Ensure that the path to your persistent path is added to the file sharing path list of docker.
+See here for more: https://docs.docker.com/docker-for-mac/osxfs/#namespaces
 
 ## StockTickR Server
 The server application is located in the `StockTickRApp` folder.
