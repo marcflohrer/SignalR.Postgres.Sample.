@@ -12,13 +12,13 @@ namespace StockTickR
 {
     public class Startup
     {
-
         public Startup(IHostingEnvironment env)
         {
             Configuration = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", true, true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json")
+                .AddEnvironmentVariables()
                 .Build();
 
             HostingEnvironment = env;
@@ -30,8 +30,7 @@ namespace StockTickR
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //var connectionString = $"Server=stocktickr_database_1:db;Port=5432;Database={Configuration["POSTGRES_DB"]};User Id={Configuration["POSTGRES_USER"]};Password={Configuration["POSTGRES_PASSWORD"]};";
-            var sqlConnectionString = $"User ID=damienbod;Password=damienbod;Host=database;Port=5432;Database=damienbod;Pooling=true;";
+            var sqlConnectionString = $"User ID={Configuration["POSTGRES_USER"]};Password={Configuration["POSTGRES_PASSWORD"]};Host=database;Port=5432;Database={Configuration["POSTGRES_DB"]};Pooling=true;";
             
             //Add PostgreSQL support
             services.AddEntityFrameworkNpgsql()

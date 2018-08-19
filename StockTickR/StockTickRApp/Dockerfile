@@ -24,7 +24,11 @@ ENV ASPNETCORE_URLS=http://+:${PORT} \
     # Enable detection of running in a container
     DOTNET_RUNNING_IN_CONTAINER=true \
     # Set the invariant mode since icu_libs isn't included (see [dotnet issue #20](https://github.com/dotnet/announcements/issues/20))
-    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true \
+    POSTGRES_USER=${POSTGRES_USER} \
+    POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
+    POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
 EXPOSE ${PORT}
 
 WORKDIR ${WD}
@@ -35,4 +39,5 @@ RUN chmod +x ${WD}${EXE} \
         \) -delete
 
 USER appuser
+
 ENTRYPOINT ${WD}${EXE}
