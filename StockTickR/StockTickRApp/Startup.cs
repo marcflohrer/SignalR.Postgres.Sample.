@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using StockTickR.Hubs;
 using StockTickR.Repositories;
 using StockTickR.Repositories.Core;
+using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
 namespace StockTickR
 {
@@ -31,12 +33,9 @@ namespace StockTickR
         public void ConfigureServices(IServiceCollection services)
         {            
             //Add PostgreSQL support
-            services.AddEntityFrameworkNpgsql()
-            .AddDbContext<StockDbContext>(
-                options => options.UseNpgsql(sqlConnectionString)
-            );
-
+            services.AddEntityFrameworkNpgsql().AddDbContext<StockDbContext>();
             services.AddScoped<IStockRepository, StockRepository>();
+            services.AddSingleton<IConfigurationRoot>(Configuration);
 
             // Add framework services.
             services.AddMvc();
@@ -53,14 +52,6 @@ namespace StockTickR
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
-
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                if (!serviceScope.ServiceProvider.GetService<StockDbContext>().AllMigrationsApplied())
-                {
-                    serviceScope.ServiceProvider.GetService<StockDbContext>().Database.Migrate();
-                }
             }
 
             app.UseFileServer();
