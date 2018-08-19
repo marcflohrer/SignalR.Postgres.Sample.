@@ -7,16 +7,16 @@ namespace StockTickR.Models
 {
     public class Stock : BaseEntity
     {
-        [ForeignKey("SymbolId")]
-        public Symbol Symbol { get; set; }
+        //[ForeignKey("SymbolId")]
+        public string Symbol { get; set; }
 
-        public decimal DayOpen { get; set; }
+        public decimal DayOpen { get; private set; }
 
-        public decimal DayLow { get; set; }
+        public decimal DayLow { get; private set; }
 
-        public decimal DayHigh { get; set; }
+        public decimal DayHigh { get; private set; }
 
-        public decimal LastChange { get; set; }
+        public decimal LastChange { get; private set; }
 
         public decimal Change
         {
@@ -67,10 +67,8 @@ namespace StockTickR.Models
         }
     }
 
-    public class Symbol : ValueObject
+    /*public class Symbol : BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
         public string Name { get; set; }
-    }
+    }*/
 }
