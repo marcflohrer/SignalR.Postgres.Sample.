@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using StockTickR.Models;
 
 namespace StockTickR.Repositories
@@ -6,9 +8,11 @@ namespace StockTickR.Repositories
     public class StockDbContext : DbContext
     {
         internal DbSet<Stock> Stocks { get; set; }
+        public IConfigurationRoot Configuration { get; }
 
-        public StockDbContext(DbContextOptions options) : base(options)
+        public StockDbContext(DbContextOptions options, IConfigurationRoot configuration) : base(options)
         {
+            Configuration = configuration;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -27,5 +31,14 @@ namespace StockTickR.Repositories
                 );
             });
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseNpgsql(string.Format(Configuration.GetConnectionString("StockDatabase"),
+                                                   Configuration["POSTGRES_USER"],
+                                                   Configuration["POSTGRES_PASSWORD"],
+                                                   Configuration["POSTGRES_DB"]));
+        }
+
     }
 }

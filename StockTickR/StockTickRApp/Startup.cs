@@ -29,9 +29,7 @@ namespace StockTickR
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            var sqlConnectionString = $"User ID={Configuration["POSTGRES_USER"]};Password={Configuration["POSTGRES_PASSWORD"]};Host=database;Port=5432;Database={Configuration["POSTGRES_DB"]};Pooling=true;";
-            
+        {            
             //Add PostgreSQL support
             services.AddEntityFrameworkNpgsql()
             .AddDbContext<StockDbContext>(
