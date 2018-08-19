@@ -1,6 +1,6 @@
 ## Prerequisite
 * docker installation
-* top-level .env file with the following keys: DB_PASSWORD, DB_USER, PATH_TO_PERSISTENT_DB
+* top-level .env file with the following keys: POSTGRES_PASSWORD, POSTGRES_USER, POSTGRES_DB
 
 Ensure that the path to your persistent path is added to the file sharing path list of docker.
 See here for more: https://docs.docker.com/docker-for-mac/osxfs/#namespaces
@@ -8,17 +8,17 @@ See here for more: https://docs.docker.com/docker-for-mac/osxfs/#namespaces
 ## StockTickR Server
 The server application is located in the `StockTickRApp` folder.
 
-To build and run:
+Run this script to build and start the app:
 ```
 $ ./buildandstartapp.sh
 ```
 
-To run when it is already built:
+Run this script to start the app when the app is already built:
 ```
 $ ./startapp.sh
 ```
 
-To stop the app:
+To stop the app run this script:
 ```
 $ ./stopapp.sh
 ```

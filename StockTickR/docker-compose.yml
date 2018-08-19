@@ -7,10 +7,10 @@ services:
      restart: always
      ports:
        - 5432:5432
-     environment:
-       - POSTGRES_USER=damienbod
-       - POSTGRES_PASSWORD=damienbod
-       - POSTGRES_DB=damienbod
+     # Provide an .env file in the same directory that provides values for the keys:
+     # POSTGRES_PASSWORD, POSTGRES_USER, POSTGRES_DB   
+     env_file:
+       - .env  
      build:
        context: PostgresDb/
        dockerfile: Dockerfile    
@@ -21,15 +21,14 @@ services:
 
   stocktickr:
     image: stocktickr
-    environment:
-      # The PostgreSQL image uses several environment variables which are easy to miss. 
-      # While none of the variables are required, they may significantly aid you in using the image.
-      # POSTGRES_PASSWORD, POSTGRES_USER, POSTGRES_DB, PGDATA
-      # see: https://github.com/docker-library/docs/tree/master/postgres
-      # values see .env
-      - POSTGRES_USER=damienbod
-      - POSTGRES_PASSWORD=damienbod
-      - POSTGRES_DB=damienbod
+    # The PostgreSQL image uses several environment variables which are easy to miss. 
+    # While none of the variables are required, they may significantly aid you in using the image.
+    # see: https://github.com/docker-library/docs/tree/master/postgres        
+    # Therefore:
+    #   Provide an .env file in the same directory that provides values for the keys:
+    #   POSTGRES_PASSWORD, POSTGRES_USER, POSTGRES_DB  
+    env_file:
+      - .env
     ports:
       - "80:8081"
     build:
