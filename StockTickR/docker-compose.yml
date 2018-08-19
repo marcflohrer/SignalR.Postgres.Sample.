@@ -3,17 +3,15 @@ version: '3.4'
 services:
 
   database:
-     image: postgresdb
+     image: postgres:11-beta3-alpine
      restart: always
      ports:
        - 5432:5432
      # Provide an .env file in the same directory that provides values for the keys:
-     # POSTGRES_PASSWORD, POSTGRES_USER, POSTGRES_DB   
+     # POSTGRES_PASSWORD, POSTGRES_USER, POSTGRES_DB 
+     # For more information see: https://docs.docker.com/compose/environment-variables/#set-environment-variables-with-docker-compose-run  
      env_file:
        - .env  
-     build:
-       context: PostgresDb/
-       dockerfile: Dockerfile    
      volumes:
        - pgdata:/var/lib/postgresql/data
      networks:
@@ -27,6 +25,7 @@ services:
     # Therefore:
     #   Provide an .env file in the same directory that provides values for the keys:
     #   POSTGRES_PASSWORD, POSTGRES_USER, POSTGRES_DB  
+    # For more information see: https://docs.docker.com/compose/environment-variables/#set-environment-variables-with-docker-compose-run     
     env_file:
       - .env
     ports:
@@ -56,4 +55,5 @@ networks:
   #    - "stocktickr:stocktickr"          
   #  build:
   #    context: CsharpClient/
-  #    dockerfile: Dockerfile    
+  #    dockerfile: Dockerfile
+  
