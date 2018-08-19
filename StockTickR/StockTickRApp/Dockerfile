@@ -34,5 +34,5 @@ RUN chmod +x ${WD}${EXE} \
        -name chmod -o \
         \) -delete
 
-#USER appuser
+USER appuser
 ENTRYPOINT ${WD}${EXE}
