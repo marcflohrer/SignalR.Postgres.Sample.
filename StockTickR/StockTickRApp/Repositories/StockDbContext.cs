@@ -19,7 +19,7 @@ namespace StockTickR.Repositories
         {
             var msftPrice = 75.12M;
             var applePrice = 158.44M;
-            var googlePrice = 158.44M;
+            var googlePrice = 1200.96M;
             // Configure model
             modelBuilder.Entity<Stock>(e =>
             {

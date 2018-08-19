@@ -42,7 +42,7 @@ namespace StockTickR.Migrations
                     b.HasData(
                         new { Id = 1, DayHigh = 75.12m, DayLow = 75.12m, DayOpen = 75.12m, LastChange = 0m, Price = 75.12m, Symbol = "MSFT" },
                         new { Id = 2, DayHigh = 158.44m, DayLow = 158.44m, DayOpen = 158.44m, LastChange = 0m, Price = 158.44m, Symbol = "AAPL" },
-                        new { Id = 3, DayHigh = 158.44m, DayLow = 158.44m, DayOpen = 158.44m, LastChange = 0m, Price = 158.44m, Symbol = "GOOG" }
+                        new { Id = 3, DayHigh = 1200.96m, DayLow = 1200.96m, DayOpen = 1200.96m, LastChange = 0m, Price = 1200.96m, Symbol = "GOOG" }
                     );
                 });
 #pragma warning restore 612, 618

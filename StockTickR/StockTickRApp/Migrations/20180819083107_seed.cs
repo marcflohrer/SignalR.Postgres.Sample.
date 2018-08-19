@@ -38,7 +38,7 @@ namespace StockTickR.Migrations
             migrationBuilder.InsertData(
                 table: "Stocks",
                 columns: new[] { "Id", "DayHigh", "DayLow", "DayOpen", "LastChange", "Price", "Symbol" },
-                values: new object[] { 3, 158.44m, 158.44m, 158.44m, 0m, 158.44m, "GOOG" });
+                values: new object[] { 3, 1200.96m, 1200.96m, 1200.96m, 0m, 1200.96m, "GOOG" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
