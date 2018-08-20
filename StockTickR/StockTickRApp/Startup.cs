@@ -1,14 +1,8 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StockTickR.Hubs;
-using StockTickR.Repositories;
-using StockTickR.Repositories.Core;
-using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
 namespace StockTickR
 {
@@ -31,10 +25,7 @@ namespace StockTickR
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {            
-            //Add PostgreSQL support
-            services.AddEntityFrameworkNpgsql().AddDbContext<StockDbContext>();
-            services.AddScoped<IStockRepository, StockRepository>();
+        {
             services.AddSingleton<IConfigurationRoot>(Configuration);
 
             // Add framework services.

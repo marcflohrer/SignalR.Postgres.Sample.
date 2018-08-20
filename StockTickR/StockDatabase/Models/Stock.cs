@@ -1,7 +1,10 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using StockDatabase.Models.Core;
+using StockDatabase.Repositories.Core;
 
-namespace StockTickR.Models
+namespace StockDatabase.Models
 {
     public class Stock : BaseEntity
     {
