@@ -15,10 +15,8 @@ FROM lohrer/aspnetcore-alpine:alpine3.8
 
 # Define the port that is exposed by the application
 ENV PORT=5000
-# Define the name of the application
-ENV EXE=/CsharpClient
-# Define the working directory inside the container
-ENV WD=/app
+# Put the name of the application defined in the AssemblyProductAttribute
+ENV EXE=CsharpClient
 
 ENV ASPNETCORE_URLS=http://+:${PORT} \
     # Enable detection of running in a container
@@ -27,12 +25,12 @@ ENV ASPNETCORE_URLS=http://+:${PORT} \
     DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
 EXPOSE ${PORT}
 
-WORKDIR ${WD}
-COPY --from=publish ${WD} .
-RUN chmod +x ${WD}${EXE} \
+WORKDIR /app
+COPY --from=publish /app .
+RUN chmod +x /app/${EXE} \
     && find $sysdirs -xdev \( \
        -name chmod -o \
         \) -delete
 
 USER appuser
-ENTRYPOINT ${WD}${EXE}
+ENTRYPOINT /app/${EXE}
