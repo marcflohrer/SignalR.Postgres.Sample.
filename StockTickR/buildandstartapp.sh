@@ -1,3 +1,6 @@
 #!/bin/bash
+date
 docker-compose build \
-   && ./startapp.sh 
+   && date \
+   && ./startapp.sh \
+   && date 
