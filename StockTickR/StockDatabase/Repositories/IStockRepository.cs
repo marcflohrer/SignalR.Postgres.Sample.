@@ -8,6 +8,8 @@ namespace StockDatabase.Repositories
 {
     public interface IStockRepository : IRepository<Stock, string>
     {
-        IEnumerable<Stock> GetOrderedStocks();
+        Stock Insert(Stock stock);
+        void Update(Stock stock);
+        void Delete(string symbol);
     }
 }
