@@ -25,42 +25,41 @@ namespace StocksDatabase.Controllers
             Logger = logger;
         }
 
-        // 
         // GET: /stocks/
-        public IEnumerable<Stock> Stocks()
+        [HttpGet]
+        public IEnumerable<Stock> Get()
         {
+            Logger.LogDebug("[StocksController]: public IEnumerable<Stock> Get");
             return UnitOfWork.Stocks.GetAll();
         }
 
-        // POST: Stocks/Edit/1
+        // GET: /stocks/GOOG
+        [HttpGet("{symbol}")]
+        public Stock Get(string symbol)
+        {
+            Logger.LogDebug("[StocksController]: public Stock Get");
+            return UnitOfWork.Stocks.Get(symbol);
+        }
+
+        // POST: stocks/
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Symbol,Price")] Stock stock)
+        public IActionResult PostCreate([FromBody] Stock stock)
         {
-            if (id != stock.Id)
+            var already = Get(stock.Symbol);
+            if (already == null)
             {
-                return NotFound();
+                if (ModelState.IsValid)
+                {
+                    return ExecuteTransaction(() => UnitOfWork.Stocks.Insert(stock));
+                }
             }
 
             if (ModelState.IsValid)
             {
                 return ExecuteTransaction(() => UnitOfWork.Stocks.Update(stock));
-            }
-            return View(stock);
-        }
-
-        // POST: Stocks/Edit/<Symbol>
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Insert([Bind("Symbol,Price")] Stock stock)
-        {
-            if (ModelState.IsValid)
-            {
-                return ExecuteTransaction(() => UnitOfWork.Stocks.Insert(stock));
             }
             return View(stock);
         }
