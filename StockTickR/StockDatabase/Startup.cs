@@ -10,7 +10,11 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 using StockDatabase.Repositories;
+using StocksDatabase.Controllers;
 
 namespace StockDatabase
 {
@@ -28,7 +32,7 @@ namespace StockDatabase
             HostingEnvironment = env;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfigurationRoot Configuration { get; }
         public IHostingEnvironment HostingEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -41,15 +45,36 @@ namespace StockDatabase
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            //Add PostgreSQL support
+            Log.Logger = new LoggerConfiguration()
+                        .MinimumLevel.Debug()
+                        .Enrich.FromLogContext()
+                        .Enrich.WithProperty("Environment", HostingEnvironment.EnvironmentName)
+                        .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Debug)
+                        .CreateLogger();
+
+            services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
             services.AddEntityFrameworkNpgsql().AddDbContext<StockDbContext>();
             services.AddScoped<IStockRepository, StockRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<StocksController>();
+            services.AddSingleton(Configuration);
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app,
+                                IHostingEnvironment env,
+                                ILoggerFactory loggerfactory,
+                                IApplicationLifetime appLifetime)
         {
+            loggerfactory.AddConsole(Configuration.GetSection("Logging"))
+                         .AddDebug()
+                         .AddSerilog();
+
+            // Ensure any buffered events are sent at shutdown
+            appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -59,8 +84,8 @@ namespace StockDatabase
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+            app.UseMvc();
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 

@@ -1,25 +1,36 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using StockDatabase.Models;
 using StockDatabase.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace StocksDatabase.Controllers
 {
+    [Route("[controller]")]
     public class StocksController : Controller
     {
 
         public IUnitOfWork UnitOfWork { get; }
+        public ILogger<StocksController> Logger { get; }
 
-        public StocksController(IUnitOfWork unitOfWork) => UnitOfWork = unitOfWork;
+
+        public StocksController(IUnitOfWork unitOfWork, ILogger<StocksController> logger)
+        {
+            UnitOfWork = unitOfWork;
+            Logger = logger;
+        }
 
         // 
-        // GET: /Stocks/
-
-        public IEnumerable<Stock> Stocks() => UnitOfWork.Stocks.GetAll();
+        // GET: /stocks/
+        public IEnumerable<Stock> Stocks()
+        {
+            return UnitOfWork.Stocks.GetAll();
+        }
 
         // POST: Stocks/Edit/1
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
