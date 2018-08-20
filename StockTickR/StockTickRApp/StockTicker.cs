@@ -130,7 +130,7 @@ namespace StockTickR
             client.BaseAddress = new Uri("http://stockdatabase:8082/");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            HttpResponseMessage response = client.GetAsync("stocks/").GetAwaiter().GetResult();
+            var response = client.GetAsync("stocks/").GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
             List<Stock> stocks = response.Content.ReadAsAsync<List<Stock>>().GetAwaiter().GetResult();
             stocks.ForEach(stock => _stocks.TryAdd(stock.Symbol, stock));
