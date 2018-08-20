@@ -28,10 +28,6 @@ namespace StockDatabase
                         config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
                         config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
                         config.AddEnvironmentVariables();
-
-                        Log.Logger = new LoggerConfiguration()
-                            .ReadFrom.Configuration(config.Build())
-                            .CreateLogger();
                     })
                     .ConfigureLogging((hostingContext, logging) =>
                     {

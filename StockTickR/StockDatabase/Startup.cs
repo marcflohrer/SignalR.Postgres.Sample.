@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -11,7 +12,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Serilog;
+using Serilog.Core.Enrichers;
+using Serilog.Enrichers.AspNetCore.HttpContext;
 using Serilog.Events;
 using StockDatabase.Repositories;
 using StocksDatabase.Controllers;
@@ -45,14 +49,18 @@ namespace StockDatabase
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            Log.Logger = new LoggerConfiguration()
-                        .MinimumLevel.Debug()
-                        .Enrich.FromLogContext()
-                        .Enrich.WithProperty("Environment", HostingEnvironment.EnvironmentName)
-                        .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Debug)
-                        .CreateLogger();
+             Log.Logger = new LoggerConfiguration()
+                            .MinimumLevel.Debug()
+                            .ReadFrom.Configuration(Configuration.GetSection("Logging"))
+                            .Enrich.FromLogContext()
+                            .Enrich.WithProperty("Environment", HostingEnvironment.EnvironmentName)
+                            .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Debug,
+                                             outputTemplate:"[{Timestamp:HH:mm:ss} {Level:u3}] {EventId} {Message:lj} {Properties}{NewLine}{Exception}{NewLine}")
+                            .CreateLogger();
+                       
 
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+            services.AddLogging(builder => builder.ClearProviders().AddSerilog(dispose: true));
             services.AddEntityFrameworkNpgsql().AddDbContext<StockDbContext>();
             services.AddScoped<IStockRepository, StockRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -64,13 +72,22 @@ namespace StockDatabase
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app,
-                                IHostingEnvironment env,
-                                ILoggerFactory loggerfactory,
-                                IApplicationLifetime appLifetime)
+                              IHostingEnvironment env,
+                              ILoggerFactory loggerfactory,
+                              IApplicationLifetime appLifetime)
         {
             loggerfactory.AddConsole(Configuration.GetSection("Logging"))
                          .AddDebug()
                          .AddSerilog();
+            
+            app.UseSerilogLogContext(options =>
+            {
+                options.EnrichersForContextFactory = context => new[]
+                {
+                    // TraceIdentifier property will be available in all chained middlewares. And yes - it is HttpContext specific
+                    new PropertyEnricher("TraceIdentifier", context.TraceIdentifier)
+                };
+            });
 
             // Ensure any buffered events are sent at shutdown
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
@@ -84,8 +101,7 @@ namespace StockDatabase
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
-            app.UseMvc();
-
+            
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
