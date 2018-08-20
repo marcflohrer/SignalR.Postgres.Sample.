@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -124,12 +126,13 @@ namespace StockTickR
         {
             _stocks.Clear();
 
-            var stocks = new List<Stock>
-            {
-                new Stock{ Symbol = "MSFT", Price = 75.12M },
-                new Stock{ Symbol = "AAPL", Price = 158.44M },
-                new Stock{ Symbol = "GOOG", Price = 924.54M }
-            };
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://stockdatabase:8082/");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            HttpResponseMessage response = client.GetAsync("stocks/").GetAwaiter().GetResult();
+            response.EnsureSuccessStatusCode();
+            List<Stock> stocks = response.Content.ReadAsAsync<List<Stock>>().GetAwaiter().GetResult();
             stocks.ForEach(stock => _stocks.TryAdd(stock.Symbol, stock));
         }
 
