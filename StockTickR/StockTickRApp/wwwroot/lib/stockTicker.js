@@ -72,7 +72,7 @@ function startStreaming() {
         close: false,
         next: displayStock,
         error: function (err) {
-            logger.log(err);
+            console.log(err);
         }
     });
 }

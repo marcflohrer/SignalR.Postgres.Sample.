@@ -13,7 +13,7 @@ namespace StockDatabase.Repositories
 
         public IStockRepository Stocks { get; private set; }
 
-        public UnitOfWork(StockDbContext stockContext, ILogger<Repository<Stock, string>> logger)
+        public UnitOfWork(StockDbContext stockContext, ILogger<Repository<Stock, int>> logger)
         {
             Stocks = new StockRepository(stockContext, logger);
             _stockContext = stockContext;

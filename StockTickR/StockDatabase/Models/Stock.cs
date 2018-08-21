@@ -1,14 +1,10 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using StockDatabase.Models.Core;
-using StockDatabase.Repositories.Core;
 
 namespace StockDatabase.Models
 {
-    public class Stock : BaseEntity
+    public class Stock : BaseEntity<int>
     {
-        //[ForeignKey("SymbolId")]
         public string Symbol { get; set; }
 
         public decimal DayOpen { get; private set; }

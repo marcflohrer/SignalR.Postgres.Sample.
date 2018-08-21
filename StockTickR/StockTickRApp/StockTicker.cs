@@ -8,6 +8,7 @@ using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using StockTickR.Clients;
 using StockTickR.Hubs;
 using StockTickR.Models;
 
@@ -32,9 +33,10 @@ namespace StockTickR
         volatile bool _updatingStockPrices;
         volatile MarketState _marketState;
 
-        public StockTicker(IHubContext<StockTickerHub> hub)
+        public StockTicker(IHubContext<StockTickerHub> hub, StockClient stockClient)
         {
             Hub = hub;
+            _stockClient = stockClient;
             LoadDefaultStocks();
         }
 
@@ -43,6 +45,7 @@ namespace StockTickR
             get;
             set;
         }
+        private StockClient _stockClient { get; }
 
         public MarketState MarketState
         {
@@ -125,14 +128,7 @@ namespace StockTickR
         void LoadDefaultStocks()
         {
             _stocks.Clear();
-
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("http://stockdatabase:8082/");
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            var response = client.GetAsync("stocks/").GetAwaiter().GetResult();
-            response.EnsureSuccessStatusCode();
-            List<Stock> stocks = response.Content.ReadAsAsync<List<Stock>>().GetAwaiter().GetResult();
+            List<Stock> stocks = (List<Stock>)_stockClient.Get();
             stocks.ForEach(stock => _stocks.TryAdd(stock.Symbol, stock));
         }
 
@@ -149,10 +145,9 @@ namespace StockTickR
                     foreach (var stock in _stocks.Values)
                     {
                         TryUpdateStockPrice(stock);
-
                         _subject.OnNext(stock);
                     }
-
+                    _stockClient.AddRange(_stocks.Values);
                     _updatingStockPrices = false;
                 }
             }

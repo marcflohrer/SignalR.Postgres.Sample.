@@ -8,14 +8,14 @@ using StockDatabase.Repositories.Core;
 
 namespace StockDatabase.Repositories
 {
-    public class StockRepository : Repository<Stock, string>, IStockRepository
+    public class StockRepository : Repository<Stock, int>, IStockRepository
     {
 
         readonly StockDbContext _context;
 
-        public ILogger<Repository<Stock, string>> Logger { get; }
+        public ILogger<Repository<Stock, int>> Logger { get; }
 
-        public StockRepository(StockDbContext stockContext, ILogger<Repository<Stock, string>> logger) : base(stockContext, logger)
+        public StockRepository(StockDbContext stockContext, ILogger<Repository<Stock, int>> logger) : base(stockContext, logger)
         {
             _context = stockContext;
             Logger = logger;
@@ -30,15 +30,15 @@ namespace StockDatabase.Repositories
 
         public void Update(Stock stock)
         {
-            Logger.LogDebug("Update " + stock);
-            _context.Stocks.Attach(stock);
+            Logger.LogDebug("Update " + stock.Symbol + " " + stock.Id);
+            _context.Stocks.Update(stock);
             _context.Entry(stock).State = EntityState.Modified;
         }
 
-        public void Delete(string symbol)
+        public void Delete(int id)
         {
-            Logger.LogDebug("Delete " + symbol);
-            _context.Remove(Get(symbol));
+            Logger.LogDebug("Delete " + id);
+            _context.Remove(Get(id));
         }
     }
 }

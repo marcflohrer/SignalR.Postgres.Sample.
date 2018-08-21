@@ -3,16 +3,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StockDatabase.Models.Core
 {
-    public abstract class BaseEntity
+    public abstract class BaseEntity<TId>
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public TId Id { get; set; }
 
         public override bool Equals(object obj)
         {
-            var entity = obj as BaseEntity;
+            var entity = obj as BaseEntity<TId>;
             return entity != null &&
-                   Id == entity.Id;
+                   Id.Equals(entity.Id);
         }
 
         public override int GetHashCode()

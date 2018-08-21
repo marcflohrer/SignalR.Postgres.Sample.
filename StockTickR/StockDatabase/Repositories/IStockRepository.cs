@@ -6,10 +6,10 @@ using StockDatabase.Repositories.Core;
 
 namespace StockDatabase.Repositories
 {
-    public interface IStockRepository : IRepository<Stock, string>
+    public interface IStockRepository : IRepository<Stock, int>
     {
         Stock Insert(Stock stock);
         void Update(Stock stock);
-        void Delete(string symbol);
+        void Delete(int symbol);
     }
 }

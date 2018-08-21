@@ -49,15 +49,12 @@ namespace StockDatabase
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-             Log.Logger = new LoggerConfiguration()
-                            .MinimumLevel.Debug()
-                            .ReadFrom.Configuration(Configuration.GetSection("Logging"))
-                            .Enrich.FromLogContext()
-                            .Enrich.WithProperty("Environment", HostingEnvironment.EnvironmentName)
-                            .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Debug,
-                                             outputTemplate:"[{Timestamp:HH:mm:ss} {Level:u3}] {EventId} {Message:lj} {Properties}{NewLine}{Exception}{NewLine}")
-                            .CreateLogger();
-                       
+            Log.Logger = new LoggerConfiguration()
+                           .ReadFrom.Configuration(Configuration.GetSection("Logging"))
+                           .Enrich.FromLogContext()
+                           .Enrich.WithProperty("Environment", HostingEnvironment.EnvironmentName)
+                           .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {EventId} {Message:lj} {Properties}{NewLine}{Exception}{NewLine}")
+                           .CreateLogger();
 
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
             services.AddLogging(builder => builder.ClearProviders().AddSerilog(dispose: true));
@@ -67,7 +64,11 @@ namespace StockDatabase
             services.AddScoped<StocksController>();
             services.AddSingleton(Configuration);
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                             .AddRazorPagesOptions(o =>
+                             {
+                                 o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+                             });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,7 +80,7 @@ namespace StockDatabase
             loggerfactory.AddConsole(Configuration.GetSection("Logging"))
                          .AddDebug()
                          .AddSerilog();
-            
+
             app.UseSerilogLogContext(options =>
             {
                 options.EnrichersForContextFactory = context => new[]
@@ -92,6 +93,8 @@ namespace StockDatabase
             // Ensure any buffered events are sent at shutdown
             appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
 
+            app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -99,12 +102,11 @@ namespace StockDatabase
             else
             {
                 app.UseExceptionHandler("/Error");
-                app.UseHsts();
+                //app.UseHsts();
             }
-            
-            app.UseStaticFiles();
-            app.UseCookiePolicy();
 
+            app.UseStaticFiles();
+            //app.UseCookiePolicy();
             app.UseMvc();
         }
     }

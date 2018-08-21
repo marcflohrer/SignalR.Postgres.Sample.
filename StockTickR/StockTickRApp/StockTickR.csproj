@@ -25,10 +25,12 @@
     <Folder Include="Models\" />
     <Folder Include="Repositories\Core\" />
     <Folder Include="Models\Core\" />
+    <Folder Include="Clients\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Models.cs" />
     <Compile Remove="Repository\Stock.cs" />
+    <Compile Remove="View\Error.cshtml.cs" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

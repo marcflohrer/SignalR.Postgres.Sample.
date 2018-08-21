@@ -43,6 +43,7 @@ services:
 
   stocktickr:
    image: stocktickr
+   restart: always
    ports:
      - "80:8081"
    build:
