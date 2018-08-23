@@ -25,7 +25,7 @@ namespace CsharpClient
 
             await connection.StartAsync();
 
-            Console.WriteLine("Starting connection. Press Ctrl-C to close.");
+            Console.WriteLine("[Info] Starting connection. Press Ctrl-C to close.");
             var cts = new CancellationTokenSource();
             Console.CancelKeyPress += (sender, a) =>
             {
@@ -35,7 +35,7 @@ namespace CsharpClient
 
             connection.Closed += e =>
             {
-                Console.WriteLine("Connection closed with error: {0}", e);
+                Console.WriteLine("[Info] Connection closed with error: {0}", e);
 
                 cts.Cancel();
                 return Task.CompletedTask;
@@ -44,12 +44,12 @@ namespace CsharpClient
 
             connection.On("marketOpened", () =>
             {
-                Console.WriteLine("Market opened");
+                Console.WriteLine("[Info] Market opened");
             });
 
             connection.On("marketClosed", () =>
             {
-                Console.WriteLine("Market closed");
+                Console.WriteLine("[Info] Market closed");
             });
 
             connection.On("marketReset", () =>
@@ -62,7 +62,7 @@ namespace CsharpClient
             {
                 while (channel.TryRead(out var stock))
                 {
-                    Console.WriteLine($"{stock.Symbol} {stock.Price}");
+                    Console.WriteLine($"[Info] {stock.Symbol} {stock.Price}");
                 }
             }
         }

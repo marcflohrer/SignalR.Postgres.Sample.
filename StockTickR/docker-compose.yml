@@ -41,6 +41,21 @@ services:
     networks:
       - stocksnetwork 
 
+  stockcollector:
+    image: stockcollector
+    restart: always
+    env_file:
+      - .env
+    links:
+      - stockdatabase
+    depends_on:
+      - "stockdatabase" 
+    build:
+      context: StockCollector/
+      dockerfile: Dockerfile    
+    networks:
+      - stocksnetwork    
+
   stocktickr:
    image: stocktickr
    restart: always

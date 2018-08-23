@@ -11,6 +11,8 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockDatabase", "StockDatabase\StockDatabase.csproj", "{3F67B782-AA14-4355-A862-23E9B0B4DFB5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockCollector", "StockCollector\StockCollector.csproj", "{580D3C58-F0AD-4F68-92F2-05A0C1D161A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,5 +74,17 @@ Global
 		{3F67B782-AA14-4355-A862-23E9B0B4DFB5}.Release|x64.Build.0 = Release|Any CPU
 		{3F67B782-AA14-4355-A862-23E9B0B4DFB5}.Release|x86.ActiveCfg = Release|Any CPU
 		{3F67B782-AA14-4355-A862-23E9B0B4DFB5}.Release|x86.Build.0 = Release|Any CPU
+		{580D3C58-F0AD-4F68-92F2-05A0C1D161A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{580D3C58-F0AD-4F68-92F2-05A0C1D161A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{580D3C58-F0AD-4F68-92F2-05A0C1D161A7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{580D3C58-F0AD-4F68-92F2-05A0C1D161A7}.Debug|x64.Build.0 = Debug|Any CPU
+		{580D3C58-F0AD-4F68-92F2-05A0C1D161A7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{580D3C58-F0AD-4F68-92F2-05A0C1D161A7}.Debug|x86.Build.0 = Debug|Any CPU
+		{580D3C58-F0AD-4F68-92F2-05A0C1D161A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{580D3C58-F0AD-4F68-92F2-05A0C1D161A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{580D3C58-F0AD-4F68-92F2-05A0C1D161A7}.Release|x64.ActiveCfg = Release|Any CPU
+		{580D3C58-F0AD-4F68-92F2-05A0C1D161A7}.Release|x64.Build.0 = Release|Any CPU
+		{580D3C58-F0AD-4F68-92F2-05A0C1D161A7}.Release|x86.ActiveCfg = Release|Any CPU
+		{580D3C58-F0AD-4F68-92F2-05A0C1D161A7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

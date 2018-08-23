@@ -116,7 +116,7 @@ function addOrReplaceStock(table, stock, type, template) {
     var child = createStockNode(stock, type, template);
 
     // try to replace
-    var stockNode = document.querySelector(type + "[data-symbol=" + stock.symbol + "]");
+    var stockNode = document.querySelector(type + "[data-symbol='" + stock.symbol + "']");
     if (stockNode) {
         var change = stockNode.querySelector(".changeValue");
         var prevChange = parseFloat(change.childNodes[1].data);

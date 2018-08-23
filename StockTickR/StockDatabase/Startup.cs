@@ -54,7 +54,7 @@ namespace StockDatabase
                            .Enrich.FromLogContext()
                            .Enrich.WithProperty("Environment", HostingEnvironment.EnvironmentName)
                            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {EventId} {Message:lj} {Properties}{NewLine}{Exception}{NewLine}")
-                           .CreateLogger();
+                           .CreateLogger(); 
 
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
             services.AddLogging(builder => builder.ClearProviders().AddSerilog(dispose: true));
@@ -80,7 +80,7 @@ namespace StockDatabase
             loggerfactory.AddConsole(Configuration.GetSection("Logging"))
                          .AddDebug()
                          .AddSerilog();
-
+ 
             app.UseSerilogLogContext(options =>
             {
                 options.EnrichersForContextFactory = context => new[]

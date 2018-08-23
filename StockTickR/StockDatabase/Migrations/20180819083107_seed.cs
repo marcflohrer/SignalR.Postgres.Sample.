@@ -24,21 +24,6 @@ namespace StockDatabase.Migrations
                 {
                     table.PrimaryKey("PK_Stocks", x => x.Id);
                 });
-
-            migrationBuilder.InsertData(
-                table: "Stocks",
-                columns: new[] { "Id", "DayHigh", "DayLow", "DayOpen", "LastChange", "Price", "Symbol" },
-                values: new object[] { 1, 75.12m, 75.12m, 75.12m, 0m, 75.12m, "MSFT" });
-
-            migrationBuilder.InsertData(
-                table: "Stocks",
-                columns: new[] { "Id", "DayHigh", "DayLow", "DayOpen", "LastChange", "Price", "Symbol" },
-                values: new object[] { 2, 158.44m, 158.44m, 158.44m, 0m, 158.44m, "AAPL" });
-
-            migrationBuilder.InsertData(
-                table: "Stocks",
-                columns: new[] { "Id", "DayHigh", "DayLow", "DayOpen", "LastChange", "Price", "Symbol" },
-                values: new object[] { 3, 1200.96m, 1200.96m, 1200.96m, 0m, 1200.96m, "GOOG" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

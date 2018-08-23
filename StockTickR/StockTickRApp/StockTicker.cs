@@ -37,7 +37,7 @@ namespace StockTickR
         {
             Hub = hub;
             _stockClient = stockClient;
-            LoadDefaultStocks();
+            UpdateStockValues();
         }
 
         IHubContext<StockTickerHub> Hub
@@ -71,7 +71,7 @@ namespace StockTickR
                 if (MarketState != MarketState.Open)
                 {
                     _timer = new Timer(UpdateStockPrices, null, _updateInterval, _updateInterval);
-
+                    
                     MarketState = MarketState.Open;
 
                     await BroadcastMarketStateChange(MarketState.Open);
@@ -116,7 +116,7 @@ namespace StockTickR
                     throw new InvalidOperationException("Market must be closed before it can be reset.");
                 }
 
-                LoadDefaultStocks();
+                UpdateStockValues();
                 await BroadcastMarketReset();
             }
             finally
@@ -125,7 +125,7 @@ namespace StockTickR
             }
         }
 
-        void LoadDefaultStocks()
+        void UpdateStockValues()
         {
             _stocks.Clear();
             List<Stock> stocks = (List<Stock>)_stockClient.Get();
@@ -142,12 +142,11 @@ namespace StockTickR
                 {
                     _updatingStockPrices = true;
 
+                    UpdateStockValues();
                     foreach (var stock in _stocks.Values)
                     {
-                        TryUpdateStockPrice(stock);
                         _subject.OnNext(stock);
                     }
-                    _stockClient.AddRange(_stocks.Values);
                     _updatingStockPrices = false;
                 }
             }
@@ -155,26 +154,6 @@ namespace StockTickR
             {
                 _updateStockPricesLock.Release();
             }
-        }
-
-        bool TryUpdateStockPrice(Stock stock)
-        {
-            // Randomly choose whether to udpate this stock or not
-            var r = _updateOrNotRandom.NextDouble();
-            if (r > 0.1)
-            {
-                return false;
-            }
-
-            // Update the stock price by a random factor of the range percent
-            var random = new Random((int)Math.Floor(stock.Price));
-            var percentChange = random.NextDouble() * _rangePercent;
-            var pos = random.NextDouble() > 0.51;
-            var change = Math.Round(stock.Price * (decimal)percentChange, 2);
-            change = pos ? change : -change;
-
-            stock.Price += change;
-            return true;
         }
 
         async Task BroadcastMarketStateChange(MarketState marketState)

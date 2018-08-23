@@ -1,9 +1,5 @@
 #!/bin/bash
-rm -rf ./StockTickR/obj/ \
-   && rm -rf ./StockTickR/bin/ \
-   && rm -rf ./CsharpClient/obj/ \
-   && rm -rf ./CsharpClient/bin/ \
-   && date \
+date \
    && docker container prune -f \
    && date \
    && docker-compose up -d  \

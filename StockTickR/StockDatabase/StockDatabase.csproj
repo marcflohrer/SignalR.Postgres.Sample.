@@ -26,7 +26,6 @@
   <ItemGroup>
     <None Include="NuGet.config" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Models\Core\" />
   </ItemGroup>

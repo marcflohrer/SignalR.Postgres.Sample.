@@ -29,10 +29,6 @@ namespace StockDatabase
                         config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
                         config.AddEnvironmentVariables();
                     })
-                    .ConfigureLogging((hostingContext, logging) =>
-                    {
-                        logging.AddSerilog(dispose: true);
-                    })
                     .UseSerilog((hostingContext, loggerConfiguration) => loggerConfiguration
                     .ReadFrom.Configuration(hostingContext.Configuration)
                     .Enrich.FromLogContext()
