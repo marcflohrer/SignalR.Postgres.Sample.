@@ -22,17 +22,13 @@ namespace StockCollector
         {
             var stockCollector = new StockCollector();
             var observable = stockCollector.StocksStream(TimeSpan.FromSeconds(10), stoppingToken)
-                .Where(stocks => stocks.Count() > 0)
-                .Do(stocks => new StockClient().AddRange(stocks))
-                /*.Do(stocks => Console.WriteLine(string.Format("{0} {1} {2}",
-                                                              Convert.ToString(stocks.First(y => y.Symbol == "Apple").Price, stockCollector.CultureInfo),
-                                                              stocks.First(y => y.Symbol == "Apple").Symbol,
-                                                              DateTime.Now)))*/
-                .Catch<IEnumerable<Stock>, Exception>(ex =>
-                {
-                    Console.WriteLine(DateTime.Now + " Catch: " + ex.Message + " : " + ex.StackTrace);
-                    return Observable.Empty<IEnumerable<Stock>>();
-                });
+                                           .Where(stocks => stocks.Count() > 0)
+                                           .Do(stocks => new StockClient().AddRange(stocks))
+                                           .Catch<IEnumerable<Stock>, Exception>(ex =>
+                                           {
+                                               Console.WriteLine(DateTime.Now + " Catch: " + ex.Message + " : " + ex.StackTrace);
+                                               return Observable.Empty<IEnumerable<Stock>>();
+                                           });
             using (var stocks = observable.Subscribe())
             {
                 Console.WriteLine(DateTime.Now + " Press any key to unsubscribe");
