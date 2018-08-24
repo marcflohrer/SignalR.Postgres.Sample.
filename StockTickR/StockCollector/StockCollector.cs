@@ -108,8 +108,8 @@ namespace StockCollector
         }
 
         private Uri financialUrl;
-        private static string dowJonesStockNameSelector;// = "#realtime_chart_list > div.table-responsive.relative > table > tbody > tr:nth-child({0}) > td:nth-child(2) > a:nth-child(2)";
-        private static string dowJonesBidPriceSelector;// = "#realtime_chart_list > div.table-responsive.relative > table > tbody > tr:nth-child({0}) > td:nth-child(5) > div > span";
+        private static string dowJonesStockNameSelector;
+        private static string dowJonesBidPriceSelector;
 
         public CultureInfo CultureInfo
         {
