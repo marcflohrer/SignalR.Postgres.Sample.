@@ -25,7 +25,7 @@ namespace StockCollector
             catch (Exception ex)
             {
                 source.Cancel();
-                Console.WriteLine("[Error] " + ex.Message + ", \n" + ex.StackTrace);
+                Console.WriteLine("[Error] " + DateTime.Now + " " + ex.Message + ", \n" + ex.StackTrace);
             }
             finally
             {

@@ -26,7 +26,7 @@ namespace StockCollector
                                            .Do(stocks => new StockClient().AddRange(stocks))
                                            .Catch<IEnumerable<Stock>, Exception>(ex =>
                                            {
-                                               Console.WriteLine(DateTime.Now + " Catch: " + ex.Message + " : " + ex.StackTrace);
+                                               Console.WriteLine("[Error] " + DateTime.Now + " Catch: " + ex.Message + " : " + ex.StackTrace);
                                                return Observable.Empty<IEnumerable<Stock>>();
                                            });
             using (var stocks = observable.Subscribe())

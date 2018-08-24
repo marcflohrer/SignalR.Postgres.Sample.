@@ -51,7 +51,7 @@ namespace StockCollector
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine("[Error] " + ex.Message + " :: " + ex.StackTrace);
+                        Console.WriteLine("[Error] " + DateTime.Now + " " + ex.Message + " :: " + ex.StackTrace);
                     }
                     finally
                     {
@@ -76,7 +76,7 @@ namespace StockCollector
                 }
                 var parser = new HtmlParser();
                 if(html == null){
-                    Console.WriteLine("[Error] html is null using url as baseaddress: " + financialUrl );
+                    Console.WriteLine("[Error] " + DateTime.Now + " html is null using url as baseaddress: " + financialUrl );
                 }
                 var document = parser.Parse(html);
                 List<Stock> stocks = new List<Stock>();
@@ -84,18 +84,18 @@ namespace StockCollector
                 {
                     if(document == null)
                     {
-                        Console.WriteLine("[Error] document null using html " + html );
+                        Console.WriteLine("[Error] " + DateTime.Now + " document null using html " + html );
                     }
                     var stockName = document.QuerySelectorAll(string.Format(dowJonesStockNameSelector, i)).FirstOrDefault()?.Text() ?? string.Empty;
                     if(stockName == null)
                     {
-                        Console.WriteLine("[Error] Stock name is null using css selector " + dowJonesStockNameSelector + " for url " + financialUrl);
+                        Console.WriteLine("[Error] " + DateTime.Now + " Stock name is null using css selector " + dowJonesStockNameSelector + " for url " + financialUrl);
                     }
                     double bidPrice = 0;
                     var rawBidPrice = document.QuerySelectorAll(string.Format(dowJonesBidPriceSelector, i)).FirstOrDefault()?.Text();
                     if(rawBidPrice == null)
                     {
-                        Console.WriteLine("[Error] Stock Price is null using css selector " + dowJonesStockNameSelector + " for url " + financialUrl);
+                        Console.WriteLine("[Error] " + DateTime.Now + " Stock Price is null using css selector " + dowJonesStockNameSelector + " for url " + financialUrl);
                     }
                     else
                     {   
@@ -129,7 +129,7 @@ namespace StockCollector
             var envVars = Environment.GetEnvironmentVariables();
             foreach (string key in envVars.Keys)
             {
-                Console.WriteLine("[Info] environment variable>" + key + " : " + (string)envVars[key]);
+                Console.WriteLine("[Info] " + DateTime.Now + " environment variable>" + key + " : " + (string)envVars[key]);
             }
             string raw = string.Empty;
             if(TryGetEnvironmentVariable("DOWJONES_LISTING_URL", out raw))
@@ -151,7 +151,7 @@ namespace StockCollector
             var envVars = Environment.GetEnvironmentVariables();
             var valueRaw = (string)envVars[key];
             if(string.IsNullOrEmpty(valueRaw)){
-                Console.WriteLine($"[Error] value for {key} is null or empty! ({valueRaw})");
+                Console.WriteLine($"[Error] " + DateTime.Now + " value for {key} is null or empty! ({valueRaw})");
                 return false;
             }
             value = valueRaw;
