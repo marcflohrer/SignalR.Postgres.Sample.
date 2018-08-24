@@ -30,11 +30,7 @@ namespace StockDatabase
                         config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
                         config.AddEnvironmentVariables();
                     })
-                    .UseSerilog((hostingContext, loggerConfiguration) => loggerConfiguration
-                    .ReadFrom.Configuration(hostingContext.Configuration)
-                    .Enrich.FromLogContext()
-                    .Enrich.WithHttpContextData()
-                    .WriteTo.Console())
+                    .UseSerilog()
                     .UseStartup<Startup>();
     }
 

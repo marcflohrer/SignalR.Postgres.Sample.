@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using StockDatabase.Models;
 using StockDatabase.Repositories;
 using System;
@@ -8,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace StocksDatabase.Controllers
 {
@@ -16,10 +16,10 @@ namespace StocksDatabase.Controllers
     {
 
         public IUnitOfWork UnitOfWork { get; }
-        public ILogger<StocksController> Logger { get; }
+        public Serilog.ILogger  Logger { get; }
 
 
-        public StocksController(IUnitOfWork unitOfWork, ILogger<StocksController> logger)
+        public StocksController(IUnitOfWork unitOfWork, Serilog.ILogger logger)
         {
             UnitOfWork = unitOfWork;
             Logger = logger;
@@ -29,7 +29,7 @@ namespace StocksDatabase.Controllers
         [HttpGet]
         public IEnumerable<Stock> Get()
         {
-            Logger.LogDebug("[StocksController]: public IEnumerable<Stock> Get");
+            Logger.Debug("[StocksController]: public IEnumerable<Stock> Get");
             return UnitOfWork.Stocks.GetAll();
         }
 
@@ -37,7 +37,7 @@ namespace StocksDatabase.Controllers
         [HttpGet("{id}")]
         public Stock Get(int id)
         {
-            Logger.LogDebug("[StocksController]: public Stock Get");
+            Logger.Debug("[StocksController]: public Stock Get");
             return UnitOfWork.Stocks.Get(id);
         }
 

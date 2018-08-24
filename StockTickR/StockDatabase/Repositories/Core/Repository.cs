@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using StockDatabase.Models.Core;
 
 namespace StockDatabase.Repositories.Core
@@ -11,8 +11,8 @@ namespace StockDatabase.Repositories.Core
     public class Repository<T, Tid> : IRepository<T, Tid> where T : BaseEntity<Tid>
     {
         protected readonly DbContext _dbContext;
-        private ILogger<Repository<T, Tid>> _logger;
-        public Repository(DbContext dbContext, ILogger<Repository<T, Tid>> logger)
+        private Serilog.ILogger _logger;
+        public Repository(DbContext dbContext, Serilog.ILogger logger)
         {
             _dbContext = dbContext;
             _logger = logger;

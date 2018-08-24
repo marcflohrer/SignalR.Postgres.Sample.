@@ -56,8 +56,9 @@ namespace StockDatabase
                            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {EventId} {Message:lj} {Properties}{NewLine}{Exception}{NewLine}")
                            .CreateLogger(); 
 
+            services.AddSingleton(Log.Logger);
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
-            services.AddLogging(builder => builder.ClearProviders().AddSerilog(dispose: true));
+            
             services.AddEntityFrameworkNpgsql().AddDbContext<StockDbContext>();
             services.AddScoped<IStockRepository, StockRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();

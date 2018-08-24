@@ -12,15 +12,18 @@ namespace StockDatabase.Repositories
         StockDbContext _stockContext { get; }
 
         public IStockRepository Stocks { get; private set; }
+        private Serilog.ILogger _logger;
 
-        public UnitOfWork(StockDbContext stockContext, ILogger<Repository<Stock, int>> logger)
+        public UnitOfWork(StockDbContext stockContext, Serilog.ILogger logger)
         {
             Stocks = new StockRepository(stockContext, logger);
             _stockContext = stockContext;
+            _logger = logger;
         }
 
         public int Complete()
         {
+            _logger.Debug("Unit of work complete");
             return _stockContext.SaveChanges();
         }
 

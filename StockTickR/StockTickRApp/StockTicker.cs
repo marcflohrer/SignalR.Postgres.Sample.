@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
+using Serilog;
 using StockTickR.Clients;
 using StockTickR.Hubs;
 using StockTickR.Models;
@@ -23,21 +23,19 @@ namespace StockTickR
 
         readonly Subject<Stock> _subject = new Subject<Stock>();
 
-        // Stock can go up or down by a percentage of this factor on each change
-        readonly double _rangePercent = 0.002;
-
-        readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(250);
-        readonly Random _updateOrNotRandom = new Random();
+        readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(2000);
 
         Timer _timer;
         volatile bool _updatingStockPrices;
         volatile MarketState _marketState;
+        private Serilog.ILogger _logger;
 
-        public StockTicker(IHubContext<StockTickerHub> hub, StockClient stockClient)
-        {
-            Hub = hub;
-            _stockClient = stockClient;
-            UpdateStockValues();
+        public StockTicker(IHubContext<StockTickerHub> hub, StockClient stockClient, Serilog.ILogger logger)
+        {            
+            Hub = hub ?? throw new ArgumentNullException(nameof(hub));
+            _stockClient = stockClient ?? throw new ArgumentNullException(nameof(stockClient));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            UpdateStockValues();            
         }
 
         IHubContext<StockTickerHub> Hub
@@ -65,16 +63,20 @@ namespace StockTickR
 
         public async Task OpenMarket()
         {
+            _logger.Debug("[ENTER] [OpenMarket]");
             await _marketStateLock.WaitAsync();
             try
             {
                 if (MarketState != MarketState.Open)
                 {
+                    _logger.Debug("[DGB] [OpenMarket]: Opening MarketState.");
                     _timer = new Timer(UpdateStockPrices, null, _updateInterval, _updateInterval);
-                    
+
                     MarketState = MarketState.Open;
 
                     await BroadcastMarketStateChange(MarketState.Open);
+                }else{
+                    _logger.Debug("[DGB] [OpenMarket]: MarketState already open.");
                 }
             }
             finally
@@ -85,6 +87,7 @@ namespace StockTickR
 
         public async Task CloseMarket()
         {
+            _logger.Debug("[ENTER] [CloseMarket]");
             await _marketStateLock.WaitAsync();
             try
             {
@@ -108,6 +111,7 @@ namespace StockTickR
 
         public async Task Reset()
         {
+            _logger.Debug("[ENTER] [Reset]");
             await _marketStateLock.WaitAsync();
             try
             {
@@ -127,6 +131,7 @@ namespace StockTickR
 
         void UpdateStockValues()
         {
+            _logger.Debug("[ENTER] [UpdateStockValues]");
             _stocks.Clear();
             List<Stock> stocks = (List<Stock>)_stockClient.Get();
             stocks.ForEach(stock => _stocks.TryAdd(stock.Symbol, stock));
@@ -134,6 +139,7 @@ namespace StockTickR
 
         async void UpdateStockPrices(object state)
         {
+            _logger.Debug("[ENTER] [UpdateStockPrices]");
             // This function must be re-entrant as it's running as a timer interval handler
             await _updateStockPricesLock.WaitAsync();
             try
@@ -145,6 +151,7 @@ namespace StockTickR
                     UpdateStockValues();
                     foreach (var stock in _stocks.Values)
                     {
+                        _logger.Debug("Updating stock: " + stock.Symbol + " = " + stock.Price);
                         _subject.OnNext(stock);
                     }
                     _updatingStockPrices = false;
@@ -158,6 +165,7 @@ namespace StockTickR
 
         async Task BroadcastMarketStateChange(MarketState marketState)
         {
+            _logger.Debug("[ENTER] [BroadcastMarketStateChange]: new state " + marketState + ", old state: " + MarketState);
             switch (marketState)
             {
                 case MarketState.Open:
@@ -167,6 +175,7 @@ namespace StockTickR
                     await Hub.Clients.All.SendAsync("marketClosed");
                     break;
                 default:
+                    _logger.Error("[BroadcastMarketStateChange]: Unknown market state: " + marketState);
                     throw new Exception("Unknown market state");
             }
         }
