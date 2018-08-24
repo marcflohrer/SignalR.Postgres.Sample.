@@ -46,7 +46,6 @@ namespace StockTickR
 
             services.AddSingleton(Configuration);
             services.AddSingleton<StockClient>();
-            services.AddScoped<StockTickerHub>();
 
             // Add framework services.
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
