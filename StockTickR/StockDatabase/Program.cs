@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using StockDatabase.Repositories;
 using StockDatabase.Repositories.Core;
+using Serilog.Enrichers.HttpContextData;
 
 namespace StockDatabase
 {
@@ -32,6 +33,7 @@ namespace StockDatabase
                     .UseSerilog((hostingContext, loggerConfiguration) => loggerConfiguration
                     .ReadFrom.Configuration(hostingContext.Configuration)
                     .Enrich.FromLogContext()
+                    .Enrich.WithHttpContextData()
                     .WriteTo.Console())
                     .UseStartup<Startup>();
     }
