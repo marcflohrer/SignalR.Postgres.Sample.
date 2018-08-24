@@ -3,7 +3,7 @@ WORKDIR /src
 
 COPY *.csproj ./
 COPY NuGet.config ./
-RUN dotnet restore -nowarn:msb3202,nu1503
+RUN dotnet restore -nowarn:nu1701
 COPY . .
 RUN dotnet build -c Release -o /app -r alpine.3.7-x64
 

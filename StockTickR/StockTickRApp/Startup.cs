@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+using Serilog.Enrichers.HttpContextData;
 using StockTickR.Clients;
 using StockTickR.Hubs;
 
@@ -28,6 +30,16 @@ namespace StockTickR
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Log.Logger = new LoggerConfiguration()
+                                    .ReadFrom.Configuration(Configuration.GetSection("Logging"))
+                                    .Enrich.FromLogContext()
+                                    .Enrich.WithProperty("Environment", HostingEnvironment.EnvironmentName)
+                                    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {EventId} {Message:lj} {Properties}{NewLine}{Exception}{NewLine}")
+                                    .Enrich.FromLogContext()
+                                    .Enrich.WithHttpContextData()
+                                    .WriteTo.Console()
+                                    .CreateLogger();
+                                    
             services.AddSingleton(Configuration);
             services.AddSingleton<StockClient>();
 
