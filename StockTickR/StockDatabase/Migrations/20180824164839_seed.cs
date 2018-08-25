@@ -7,8 +7,12 @@ namespace StockDatabase.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "dbs");
+
             migrationBuilder.CreateTable(
                 name: "Stocks",
+                schema: "dbs",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -29,7 +33,8 @@ namespace StockDatabase.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Stocks");
+                name: "Stocks",
+                schema: "dbs");
         }
     }
 }

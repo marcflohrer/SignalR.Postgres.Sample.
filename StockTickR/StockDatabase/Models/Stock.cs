@@ -63,9 +63,4 @@ namespace StockDatabase.Models
             }
         }
     }
-
-    /*public class Symbol : BaseEntity
-    {
-        public string Name { get; set; }
-    }*/
 }

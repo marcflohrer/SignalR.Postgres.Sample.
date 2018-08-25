@@ -11,5 +11,6 @@ namespace StockDatabase.Repositories
         Stock Insert(Stock stock);
         void Update(Stock stock);
         void Delete(int symbol);
+        Stock GetStockBySymbol(string symbol);
     }
 }

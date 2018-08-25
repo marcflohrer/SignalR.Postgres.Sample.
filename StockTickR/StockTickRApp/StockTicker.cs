@@ -58,7 +58,7 @@ namespace StockTickR
 
         public IObservable<Stock> StreamStocks()
         {
-            return _subject;
+            return _subject;            
         }
 
         public async Task OpenMarket()

@@ -1,13 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using StockDatabase.Models;
-using StockDatabase.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Serilog;
+using System.Reactive.Linq;
+using Microsoft.AspNetCore.Mvc;
+using StockDatabase.Models;
+using StockDatabase.Repositories;
 
 namespace StocksDatabase.Controllers
 {
@@ -16,7 +13,7 @@ namespace StocksDatabase.Controllers
     {
 
         public IUnitOfWork UnitOfWork { get; }
-        public Serilog.ILogger  Logger { get; }
+        public Serilog.ILogger Logger { get; }
 
 
         public StocksController(IUnitOfWork unitOfWork, Serilog.ILogger logger)
@@ -29,15 +26,15 @@ namespace StocksDatabase.Controllers
         [HttpGet]
         public IEnumerable<Stock> Get()
         {
-            Logger.Debug("[StocksController]: public IEnumerable<Stock> Get");
+            Logger.Debug("public IEnumerable<Stock> Get");
             return UnitOfWork.Stocks.GetAll();
         }
 
         // GET: /stocks/1
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public Stock Get(int id)
         {
-            Logger.Debug("[StocksController]: public Stock Get");
+            Logger.Debug("public Stock Get");
             return UnitOfWork.Stocks.Get(id);
         }
 
@@ -45,14 +42,13 @@ namespace StocksDatabase.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost("{id}")]
-        //[ValidateAntiForgeryToken]
         public IActionResult PostCreate([FromBody] Stock stock)
         {
             if (stock == null)
             {
                 return View(stock);
             }
-            var already = Get(stock.Id);
+            var already = UnitOfWork.Stocks.GetStockBySymbol(stock.Symbol);
             if (already == null)
             {
                 if (ModelState.IsValid)
@@ -73,7 +69,16 @@ namespace StocksDatabase.Controllers
         [HttpPost]
         public IActionResult PostCreate([FromBody] IEnumerable<Stock> stocks)
         {
-            stocks.ToList().ForEach(stock => PostCreate(stock));
+            var stocksFromDb = new List<Stock>();
+            stocks.ToList().ForEach(stock => stocksFromDb.Add(UnitOfWork
+                                                              .Stocks
+                                                              .GetStockBySymbol(stock.Symbol)));
+            var stocksWithChangedPrice = stocksFromDb.Where(stock => stock.Price != stocks.First(s => s.Symbol == stock.Symbol).Price)
+                        .ToList();
+            stocksWithChangedPrice
+                        .ForEach(stock => stock.Price = stocks.First(s => s.Symbol == stock.Symbol).Price);
+            stocksWithChangedPrice
+                        .ForEach(stock => PostCreate(stock));
             return View(stocks);
         }
 

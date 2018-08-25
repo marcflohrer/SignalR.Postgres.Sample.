@@ -21,6 +21,16 @@ namespace StockDatabase.Repositories
             _logger = logger;
         }
 
+        public Stock GetStockBySymbol(string symbol)
+        {
+            _logger.Debug("Get by symbol: " + symbol);
+            return (Stock)_context.Stocks
+                                  .Where(b => b.Symbol == symbol)
+                                  .Select(b => b)
+                                  .ToList()
+                                  .FirstOrDefault();
+        }
+
         public Stock Insert(Stock stock)
         {
             _logger.Debug("Insert " + stock);

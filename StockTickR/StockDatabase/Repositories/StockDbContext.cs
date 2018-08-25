@@ -10,6 +10,8 @@ namespace StockDatabase.Repositories
         internal DbSet<Stock> Stocks { get; set; }
         public IConfigurationRoot Configuration { get; }
 
+        public string DefaultSchema = "dbs";
+
         public StockDbContext(DbContextOptions options, IConfigurationRoot configuration) : base(options)
         {
             Configuration = configuration;
@@ -17,6 +19,8 @@ namespace StockDatabase.Repositories
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasDefaultSchema(DefaultSchema);
+
             var msftPrice = 75.12M;
             var applePrice = 158.44M;
             var googlePrice = 1200.96M;

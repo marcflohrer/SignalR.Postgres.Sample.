@@ -24,6 +24,7 @@ namespace StockCollector
             var observable = stockCollector.StocksStream(TimeSpan.FromSeconds(10), stoppingToken)
                                            .Where(stocks => stocks.Count() > 0)
                                            .Do(stocks => new StockClient().AddRange(stocks))
+                                           .Do(stocks => Console.WriteLine("Apple: " + stocks.FirstOrDefault(stock => stock.Symbol == "Apple").Price))
                                            .Catch<IEnumerable<Stock>, Exception>(ex =>
                                            {
                                                Console.WriteLine("[Error] " + DateTime.Now + " Catch: " + ex.Message + " : " + ex.StackTrace);

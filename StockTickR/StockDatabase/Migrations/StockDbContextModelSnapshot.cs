@@ -14,6 +14,7 @@ namespace StockDatabase.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("dbs")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
@@ -38,8 +39,7 @@ namespace StockDatabase.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Stocks");
-                }
-                               );
+                });
 #pragma warning restore 612, 618
         }
     }
