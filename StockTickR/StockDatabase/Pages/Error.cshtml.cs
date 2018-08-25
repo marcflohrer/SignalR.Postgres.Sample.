@@ -6,17 +6,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace StockDatabase.Pages
-{
-    public class ErrorModel : PageModel
-    {
+namespace StockDatabase.Pages {
+    public class ErrorModel : PageModel {
         public string RequestId { get; set; }
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        public bool ShowRequestId => !string.IsNullOrEmpty (RequestId);
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public void OnGet()
-        {
+        [ResponseCache (Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public void OnGet () {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
         }
     }

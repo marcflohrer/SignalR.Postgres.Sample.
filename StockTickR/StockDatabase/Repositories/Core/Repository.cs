@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -6,51 +6,41 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Serilog;
 using StockDatabase.Models.Core;
 
-namespace StockDatabase.Repositories.Core
-{
-    public class Repository<T, Tid> : IRepository<T, Tid> where T : BaseEntity<Tid>
-    {
+namespace StockDatabase.Repositories.Core {
+    public class Repository<T, Tid> : IRepository<T, Tid> where T : BaseEntity<Tid> {
         protected readonly DbContext _dbContext;
         private Serilog.ILogger _logger;
-        public Repository(DbContext dbContext, Serilog.ILogger logger)
-        {
+        public Repository (DbContext dbContext, Serilog.ILogger logger) {
             _dbContext = dbContext;
             _logger = logger;
         }
 
-        public virtual EntityEntry<T> Add(T entity)
-        {
-            return _dbContext.Add<T>(entity);
+        public virtual EntityEntry<T> Add (T entity) {
+            return _dbContext.Add<T> (entity);
         }
 
-        public void AddRange(IEnumerable<T> entities)
-        {
-            _dbContext.AddRange(entities);
+        public void AddRange (IEnumerable<T> entities) {
+            _dbContext.AddRange (entities);
         }
 
-        public T Find(Predicate<T> predicate)
-        {
-            return _dbContext.Find<T>(predicate);
+        public T Find (Predicate<T> predicate) {
+            return _dbContext.Find<T> (predicate);
         }
 
-        public T Get(Tid id)
-        {
-            return _dbContext.Set<T>().AsNoTracking<T>().Where(t => t.Id.Equals(id)).FirstOrDefault();
+        public T Get (Tid id) {
+            return _dbContext.Set<T> ().AsNoTracking<T> ().Where (t => t.Id.Equals (id)).FirstOrDefault ();
         }
 
-        public IEnumerable<T> GetAll()
-        {
-            return _dbContext.Set<T>().ToListAsync<T>().GetAwaiter().GetResult();
+        public IEnumerable<T> GetAll () {
+            return _dbContext.Set<T> ().ToListAsync<T> ().GetAwaiter ().GetResult ();
         }
 
-        public EntityEntry<T> Remove(T entity)
-        {
-            return _dbContext.Set<T>().Remove(entity);
+        public EntityEntry<T> Remove (T entity) {
+            return _dbContext.Set<T> ().Remove (entity);
         }
 
-        public void RemoveRange(IEnumerable<T> entities)
-        {
-            _dbContext.Set<T>().RemoveRange(entities);
+        public void RemoveRange (IEnumerable<T> entities) {
+            _dbContext.Set<T> ().RemoveRange (entities);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,70 +6,58 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace CsharpClient
-{
-    public static class Program
-    {
+namespace CsharpClient {
+    public static class Program {
 #pragma warning disable RECS0154 // Parameter wird niemals verwendet.
-        static async Task Main(string[] args)
+        static async Task Main (string[] args)
 #pragma warning restore RECS0154 // Parameter wird niemals verwendet.
         {
-            var connection = new HubConnectionBuilder()
-                .WithUrl("http://stocktickr:8081/stocks")
-                .ConfigureLogging(logging =>
-                {
-                    logging.AddConsole();
+            var connection = new HubConnectionBuilder ()
+                .WithUrl ("http://stocktickr:8081/stocks")
+                .ConfigureLogging (logging => {
+                    logging.AddConsole ();
                 })
-                .AddMessagePackProtocol()
-                .Build();
+                .AddMessagePackProtocol ()
+                .Build ();
 
-            await connection.StartAsync();
+            await connection.StartAsync ();
 
-            Console.WriteLine("[Info] " + DateTime.Now + " Starting connection. Press Ctrl-C to close.");
-            var cts = new CancellationTokenSource();
-            Console.CancelKeyPress += (sender, a) =>
-            {
+            Console.WriteLine ("[Info] " + DateTime.Now + " Starting connection. Press Ctrl-C to close.");
+            var cts = new CancellationTokenSource ();
+            Console.CancelKeyPress += (sender, a) => {
                 a.Cancel = true;
-                cts.Cancel();
+                cts.Cancel ();
             };
 
-            connection.Closed += e =>
-            {
-                Console.WriteLine("[Info] " + DateTime.Now + " Connection closed with error: {0}", e);
+            connection.Closed += e => {
+                Console.WriteLine ("[Info] " + DateTime.Now + " Connection closed with error: {0}", e);
 
-                cts.Cancel();
+                cts.Cancel ();
                 return Task.CompletedTask;
             };
 
-
-            connection.On("marketOpened", () =>
-            {
-                Console.WriteLine("[Info] " + DateTime.Now + " Market opened");
+            connection.On ("marketOpened", () => {
+                Console.WriteLine ("[Info] " + DateTime.Now + " Market opened");
             });
 
-            connection.On("marketClosed", () =>
-            {
-                Console.WriteLine("[Info] " + DateTime.Now + " Market closed");
+            connection.On ("marketClosed", () => {
+                Console.WriteLine ("[Info] " + DateTime.Now + " Market closed");
             });
 
-            connection.On("marketReset", () =>
-            {
+            connection.On ("marketReset", () => {
                 // We don't care if the market rest
             });
 
-            var channel = await connection.StreamAsChannelAsync<Stock>("StreamStocks", CancellationToken.None);
-            while (await channel.WaitToReadAsync() && !cts.IsCancellationRequested)
-            {
-                while (channel.TryRead(out var stock))
-                {
-                    Console.WriteLine($"[Info] {stock.Symbol} {stock.Price}");
+            var channel = await connection.StreamAsChannelAsync<Stock> ("StreamStocks", CancellationToken.None);
+            while (await channel.WaitToReadAsync () && !cts.IsCancellationRequested) {
+                while (channel.TryRead (out var stock)) {
+                    Console.WriteLine ($"[Info] {stock.Symbol} {stock.Price}");
                 }
             }
         }
     }
 
-    public class Stock
-    {
+    public class Stock {
         public string Symbol { get; set; }
 
         public decimal DayOpen { get; private set; }

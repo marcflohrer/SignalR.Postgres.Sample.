@@ -1,10 +1,8 @@
-﻿using System;
+using System;
 using StockDatabase.Models.Core;
 
-namespace StockTickR.Models
-{
-    public class Stock : BaseEntity
-    {
+namespace StockTickR.Models {
+    public class Stock : BaseEntity {
         //[ForeignKey("SymbolId")]
         public string Symbol { get; set; }
 
@@ -16,49 +14,38 @@ namespace StockTickR.Models
 
         public decimal LastChange { get; private set; }
 
-        public decimal Change
-        {
-            get
-            {
+        public decimal Change {
+            get {
                 return Price - DayOpen;
             }
         }
 
-        public double PercentChange
-        {
-            get
-            {
-                return (double)Math.Round(Change / Price, 4);
+        public double PercentChange {
+            get {
+                return (double) Math.Round (Change / Price, 4);
             }
         }
         decimal _price;
 
-        public decimal Price
-        {
-            get
-            {
+        public decimal Price {
+            get {
                 return _price;
             }
-            set
-            {
-                if (_price == value)
-                {
+            set {
+                if (_price == value) {
                     return;
                 }
 
                 LastChange = value - _price;
                 _price = value;
 
-                if (DayOpen == 0)
-                {
+                if (DayOpen == 0) {
                     DayOpen = _price;
                 }
-                if (_price < DayLow || DayLow == 0)
-                {
+                if (_price < DayLow || DayLow == 0) {
                     DayLow = _price;
                 }
-                if (_price > DayHigh)
-                {
+                if (_price > DayHigh) {
                     DayHigh = _price;
                 }
             }

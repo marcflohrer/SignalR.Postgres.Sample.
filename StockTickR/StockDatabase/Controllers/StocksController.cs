@@ -6,87 +6,73 @@ using Microsoft.AspNetCore.Mvc;
 using StockDatabase.Models;
 using StockDatabase.Repositories;
 
-namespace StocksDatabase.Controllers
-{
-    [Route("[controller]")]
-    public class StocksController : Controller
-    {
+namespace StocksDatabase.Controllers {
+    [Route ("[controller]")]
+    public class StocksController : Controller {
 
         public IUnitOfWork UnitOfWork { get; }
         public Serilog.ILogger Logger { get; }
 
-
-        public StocksController(IUnitOfWork unitOfWork, Serilog.ILogger logger)
-        {
+        public StocksController (IUnitOfWork unitOfWork, Serilog.ILogger logger) {
             UnitOfWork = unitOfWork;
             Logger = logger;
         }
 
         // GET: /stocks/
         [HttpGet]
-        public IEnumerable<Stock> Get()
-        {
-            Logger.Debug("public IEnumerable<Stock> Get");
-            return UnitOfWork.Stocks.GetAll();
+        public IEnumerable<Stock> Get () {
+            Logger.Debug ("public IEnumerable<Stock> Get");
+            return UnitOfWork.Stocks.GetAll ();
         }
 
         // GET: /stocks/1
-        [HttpGet("{id:int}")]
-        public Stock Get(int id)
-        {
-            Logger.Debug("public Stock Get");
-            return UnitOfWork.Stocks.Get(id);
+        [HttpGet ("{id:int}")]
+        public Stock Get (int id) {
+            Logger.Debug ("public Stock Get");
+            return UnitOfWork.Stocks.Get (id);
         }
 
         // POST: stocks/
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost("{id}")]
-        public IActionResult PostCreate([FromBody] Stock stock)
-        {
-            if (stock == null)
-            {
-                return View(stock);
+        [HttpPost ("{id}")]
+        public IActionResult PostCreate ([FromBody] Stock stock) {
+            if (stock == null) {
+                return View (stock);
             }
-            var already = UnitOfWork.Stocks.GetStockBySymbol(stock.Symbol);
-            if (already == null)
-            {
-                if (ModelState.IsValid)
-                {
-                    return ExecuteTransaction(() => UnitOfWork.Stocks.Insert(stock));
+            var already = UnitOfWork.Stocks.GetStockBySymbol (stock.Symbol);
+            if (already == null) {
+                if (ModelState.IsValid) {
+                    return ExecuteTransaction (() => UnitOfWork.Stocks.Insert (stock));
                 }
+            } else if (ModelState.IsValid) {
+                return ExecuteTransaction (() => UnitOfWork.Stocks.Update (stock));
             }
-            else if (ModelState.IsValid)
-            {
-                return ExecuteTransaction(() => UnitOfWork.Stocks.Update(stock));
-            }
-            return View(stock);
+            return View (stock);
         }
 
         // POST: stocks/
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public IActionResult PostCreate([FromBody] IEnumerable<Stock> stocks)
-        {
-            var stocksFromDb = new List<Stock>();
-            stocks.ToList().ForEach(stock => stocksFromDb.Add(UnitOfWork
-                                                              .Stocks
-                                                              .GetStockBySymbol(stock.Symbol)));
-            var stocksWithChangedPrice = stocksFromDb.Where(stock => stock.Price != stocks.First(s => s.Symbol == stock.Symbol).Price)
-                        .ToList();
+        public IActionResult PostCreate ([FromBody] IEnumerable<Stock> stocks) {
+            var stocksFromDb = new List<Stock> ();
+            stocks.ToList ().ForEach (stock => stocksFromDb.Add (UnitOfWork
+                .Stocks
+                .GetStockBySymbol (stock.Symbol)));
+            var stocksWithChangedPrice = stocksFromDb.Where (stock => stock.Price != stocks.First (s => s.Symbol == stock.Symbol).Price)
+                .ToList ();
             stocksWithChangedPrice
-                        .ForEach(stock => stock.Price = stocks.First(s => s.Symbol == stock.Symbol).Price);
+                .ForEach (stock => stock.Price = stocks.First (s => s.Symbol == stock.Symbol).Price);
             stocksWithChangedPrice
-                        .ForEach(stock => PostCreate(stock));
-            return View(stocks);
+                .ForEach (stock => PostCreate (stock));
+            return View (stocks);
         }
 
-        private IActionResult ExecuteTransaction(Action action)
-        {
-            action.Invoke();
-            UnitOfWork.Complete();
-            return RedirectToAction("Index");
+        private IActionResult ExecuteTransaction (Action action) {
+            action.Invoke ();
+            UnitOfWork.Complete ();
+            return RedirectToAction ("Index");
         }
     }
 }
