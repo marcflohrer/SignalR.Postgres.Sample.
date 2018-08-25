@@ -99,8 +99,12 @@ namespace StockCollector
                     }
                     else
                     {   
-                        bidPrice = Convert.ToDouble(rawBidPrice.Trim(), CultureInfo);
-                        stocks.Add(new Stock { Symbol = stockName, Price = Convert.ToDecimal(bidPrice, CultureInfo)});                                                
+                        try{
+                            bidPrice = Convert.ToDouble(rawBidPrice.Trim(), CultureInfo);
+                            stocks.Add(new Stock { Symbol = stockName, Price = Convert.ToDecimal(bidPrice, CultureInfo)});                                                    
+                        }catch(Exception ex){
+                            Console.WriteLine("[Error] " + DateTime.Now + " Cannot parse " + rawBidPrice.Trim() + " to double ");
+                        }
                     }
                 }
                 return stocks;
