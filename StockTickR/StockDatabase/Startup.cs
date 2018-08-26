@@ -91,11 +91,9 @@ namespace StockDatabase {
                 app.UseDeveloperExceptionPage ();
             } else {
                 app.UseExceptionHandler ("/Error");
-                //app.UseHsts();
             }
 
             app.UseStaticFiles ();
-            //app.UseCookiePolicy();
             app.UseMvc ();
         }
     }
