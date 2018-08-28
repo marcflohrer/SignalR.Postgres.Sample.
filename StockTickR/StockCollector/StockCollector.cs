@@ -120,12 +120,18 @@ namespace StockCollector {
             }
         }
 
+        private List<string> blackList = new List<string> ();
+
         private bool TryGetEnvironmentVariable (string key, out string value) {
             value = null;
             var envVars = Environment.GetEnvironmentVariables ();
             var valueRaw = (string) envVars[key];
+            if (blackList.Contains (key)) {
+                return false;
+            }
             if (string.IsNullOrEmpty (valueRaw)) {
-                Console.WriteLine ($"[Error] " + DateTime.Now + " value for {key} is null or empty! ({valueRaw})");
+                Console.WriteLine (string.Format ("[Error] " + DateTime.Now + " value for {0} is missing. Please add it to the .env file.", key));
+                blackList.Add (key);
                 return false;
             }
             value = valueRaw;

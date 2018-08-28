@@ -21,6 +21,7 @@ namespace StockCollector {
             var stockClient = new StockClient ();
             var observable = stockCollector.StocksStream (TimeSpan.FromSeconds (3), stoppingToken)
                 .Where (stocks => stocks.Any ())
+                .DistinctUntilChanged ()
                 .Do (stocks => stockClient.AddRange (stocks))
                 .Catch<IEnumerable<Stock>, Exception> (ex => {
                     Console.WriteLine ("[Error] " + DateTime.Now + " Catch: " + ex.Message + " : " + ex.StackTrace);
