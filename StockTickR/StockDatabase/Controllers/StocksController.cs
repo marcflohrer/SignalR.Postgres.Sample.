@@ -4,31 +4,31 @@ using System.Linq;
 using System.Reactive.Linq;
 using Microsoft.AspNetCore.Mvc;
 using StockDatabase.Models;
-using StockDatabase.Repositories;
+using StockDatabase.Repositories.Interfaces;
 
 namespace StocksDatabase.Controllers {
     [Route ("[controller]")]
     public class StocksController : Controller {
 
         public IUnitOfWork UnitOfWork { get; }
-        public Serilog.ILogger Logger { get; }
+        private Serilog.ILogger _logger { get; }
 
         public StocksController (IUnitOfWork unitOfWork, Serilog.ILogger logger) {
             UnitOfWork = unitOfWork;
-            Logger = logger;
+            _logger = logger;
         }
 
         // GET: /stocks/
         [HttpGet]
         public IEnumerable<Stock> Get () {
-            Logger.Debug ("public IEnumerable<Stock> Get");
+            _logger.Debug ("public IEnumerable<Stock> Get");
             return UnitOfWork.Stocks.GetAll ();
         }
 
         // GET: /stocks/1
         [HttpGet ("{id:int}")]
         public Stock Get (int id) {
-            Logger.Debug ("public Stock Get");
+            _logger.Debug ("public Stock Get");
             return UnitOfWork.Stocks.Get (id);
         }
 

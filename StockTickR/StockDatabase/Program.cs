@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Serilog.Enrichers.HttpContextData;
 using StockDatabase.Repositories;
 using StockDatabase.Repositories.Core;
 
@@ -13,7 +12,10 @@ namespace StockDatabase {
     public class Program {
         public static void Main (string[] args) {
 
-            CreateWebHostBuilder (args).Build ().Seed ().Run ();
+            CreateWebHostBuilder (args)
+                .Build ()
+                .Seed ()
+                .Run ();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder (string[] args) =>
@@ -26,13 +28,12 @@ namespace StockDatabase {
                 config.AddJsonFile ($"appsettings.{env.EnvironmentName}.json", optional : true, reloadOnChange : true);
                 config.AddEnvironmentVariables ();
             })
-            .UseSerilog ()
+            //.UseSerilog ()
             .UseStartup<Startup> ();
     }
 
     public static class WebHostExtension {
         public static IWebHost Seed (this IWebHost webhost) {
-            // alternatively resolve UserManager instead and pass that if only think you want to seed are the users     
             var stockDbContext = webhost.Services.GetService<IServiceScopeFactory> ()
                 .CreateScope ()
                 .ServiceProvider

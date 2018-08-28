@@ -14,24 +14,22 @@ FROM lohrer/aspnetcore-alpine:alpine3.8 as base
 
 # Define the port that is exposed by the application
 ENV PORT=8081
-# Put the name of the application defined in the AssemblyProductAttribute
-ENV EXE=StockTickR
 
 ENV ASPNETCORE_URLS=http://+:${PORT} \
     # Enable detection of running in a container
     DOTNET_RUNNING_IN_CONTAINER=true \
-    # Set the invariant mode since icu_libs isn't included (see [dotnet issue #20](https://github.com/dotnet/announcements/issues/20))
-    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
+    # Since icu_libs (International Components for Unicode library (libraries)) are included
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
 EXPOSE ${PORT}
 
 WORKDIR /app
 COPY --from=publish /app .
-RUN chmod +x /app/${EXE} \
+RUN chmod +x /app/StockTickR \
     && find $sysdirs -xdev \( \
        -name chmod -o \
         \) -delete
 
 USER appuser
 
-ENTRYPOINT /app/${EXE}
+ENTRYPOINT ["./StockTickR"]

@@ -44,7 +44,7 @@ namespace StockDatabase.Repositories.Core {
         /// <summary>
         /// Remove the specified entity by id.
         /// </summary>
-        /// <param name="id">Identifier of the entity.</param>
+        /// <param name="entity">Entity to remove.</param>
         EntityEntry<T> Remove (T entity);
 
         /// <summary>

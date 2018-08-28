@@ -12,9 +12,9 @@ hubConnection.start()
         hubConnection.stream("StreamStocks").subscribe({
             next: (stock) => {
                 console.log(stock);
-                // console.log(stock.Symbol + " " + stock.Price);
+                console.log(stock.Symbol + " " + stock.Price);
             },
-            error: (err) => { },
-            complete: () => { }
+            error: (err) => { console.error(err);},
+            complete: () => { console.log("StreamStocks completed.");}
         });
     });

@@ -18,10 +18,10 @@ namespace StockCollector {
     public class StockCollectionService : BackgroundService {
         protected override Task ExecuteAsync (CancellationToken stoppingToken) {
             var stockCollector = new StockCollector ();
-            var observable = stockCollector.StocksStream (TimeSpan.FromSeconds (10), stoppingToken)
-                .Where (stocks => stocks.Count () > 0)
-                .Do (stocks => new StockClient ().AddRange (stocks))
-                .Do (stocks => Console.WriteLine ("Apple: " + stocks.FirstOrDefault (stock => stock.Symbol == "Apple").Price))
+            var stockClient = new StockClient ();
+            var observable = stockCollector.StocksStream (TimeSpan.FromSeconds (3), stoppingToken)
+                .Where (stocks => stocks.Any ())
+                .Do (stocks => stockClient.AddRange (stocks))
                 .Catch<IEnumerable<Stock>, Exception> (ex => {
                     Console.WriteLine ("[Error] " + DateTime.Now + " Catch: " + ex.Message + " : " + ex.StackTrace);
                     return Observable.Empty<IEnumerable<Stock>> ();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using StockDatabase.Models;
 using StockDatabase.Repositories.Core;
+using StockDatabase.Repositories.Interfaces;
 
 namespace StockDatabase.Repositories {
     /// Supports all classes in the .NET Framework class hierarchy and provides low-level services to derived classes. This is the ultimate base class of all classes in the .NET Framework; it is the root of the type hierarchy.
@@ -19,7 +20,6 @@ namespace StockDatabase.Repositories {
         }
 
         public int Complete () {
-            _logger.Debug ("Unit of work complete");
             return _stockContext.SaveChanges ();
         }
 
