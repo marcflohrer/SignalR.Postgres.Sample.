@@ -29,6 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Core\" />
+    <Folder Include="Repositories\Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Repositories\Core\IgnoreMemberAttribute.cs" />
